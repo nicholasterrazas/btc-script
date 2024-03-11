@@ -1,11 +1,11 @@
 import * as React from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import { OPCODES } from './Opcodes';
-import { Box, IconButton, ListItemButton, ListItemIcon, ListItemText, Stack } from '@mui/material';
+import { OPCODES, nameToOpcode } from './Opcodes';
+import { Box, FormControlLabel, IconButton, ListItemButton, ListItemIcon, ListItemText, Stack, Switch } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 
+const label = { inputProps: { 'aria-label': 'Show disabled opcodes' } };
 
 function OpcodeList({showDisabled, scriptOpcodes, setScriptOpcodes}) {
     // use either all opcodes, or only opcodes that are not disabled 
@@ -36,7 +36,7 @@ function OpcodeList({showDisabled, scriptOpcodes, setScriptOpcodes}) {
     );
 }
 
-function ScriptList({scriptOpcodes, setScriptOpcodes}) {
+function ScriptList({title, scriptOpcodes, setScriptOpcodes}) {
     console.log(scriptOpcodes);
 
     const removeFromScript = (indexToRemove) => {
@@ -47,7 +47,7 @@ function ScriptList({scriptOpcodes, setScriptOpcodes}) {
     return (
         <Box width='33%'>
             {(scriptOpcodes.length > 0) ? <>
-                <h2>Script</h2> 
+                <h2>{title || "Script"}</h2> 
                 <List>
                     {scriptOpcodes.map((op, idx) => (
                         <ListItem 
@@ -64,7 +64,7 @@ function ScriptList({scriptOpcodes, setScriptOpcodes}) {
                     ))}
                 </List>
             </> : <>
-                <h2>Script (empty)</h2>        
+                <h2>{title || "Script"} (empty)</h2>        
             </>}
         </Box>
     );
@@ -74,12 +74,21 @@ export default function Create() {
     const [showDisabled, setShowDisabled] = React.useState(true);
     const [scriptOpcodes, setScriptOpcodes] = React.useState([]);
 
+    const toggleDisabledDisplay = () => {
+        setShowDisabled((prevShowDisabled) => !prevShowDisabled);
+    };
+
     return (
         <>
             <h1 id='create' style={{paddingTop:'45px'}}>Create</h1>
-            <Stack direction='row'>
-                <ScriptList scriptOpcodes={scriptOpcodes} setScriptOpcodes={setScriptOpcodes}/>
-                <ScriptList scriptOpcodes={scriptOpcodes} setScriptOpcodes={setScriptOpcodes}/>
+
+            <FormControlLabel 
+                control={<Switch defaultChecked onChange={toggleDisabledDisplay}/>} 
+                label="Show disabled Opcodes"
+            />
+            <Stack direction='row' alignItems='flex-start' justifyContent='center'>
+                <ScriptList title={"scriptPubKey"} scriptOpcodes={scriptOpcodes} setScriptOpcodes={setScriptOpcodes}/>
+                <ScriptList title={"scriptSig"} scriptOpcodes={scriptOpcodes} setScriptOpcodes={setScriptOpcodes}/>
                 <OpcodeList showDisabled={showDisabled} scriptOpcodes={scriptOpcodes} setScriptOpcodes={setScriptOpcodes}/>
             </Stack>
         </>

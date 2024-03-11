@@ -923,3 +923,11 @@ export const OPCODES = [
         category: 'locktime'
     }
 ];
+
+export function nameToOpcode(nameToFind) {
+    let opcode = OPCODES.find(op => op.name === nameToFind);
+    if (opcode) 
+        return opcode;
+    else
+        return null;
+} 

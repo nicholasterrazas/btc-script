@@ -1,8 +1,8 @@
 // source: https://en.bitcoin.it/wiki/Script
 
-const OPCODES = {
+export const OPCODES = [
     // constants
-    OP_0: {
+    {
         name: 'OP_0',
         opcode: 0, 
         hex: '0x00', 
@@ -11,7 +11,7 @@ const OPCODES = {
         description: 'An empty array of bytes is pushed onto the stack. (This is not a no-op: an item is added to the stack.)',
         category: 'constants'
     },
-    OP_PUSHDATA1: {
+    {
         name: 'OP_PUSHDATA1',
         opcode: 76,
         hex: '0x4c',
@@ -20,7 +20,7 @@ const OPCODES = {
         description: 'The next byte contains the number of bytes to be pushed onto the stack.',
         category: 'constants'
     },
-    OP_PUSHDATA2: {
+    {
         name: 'OP_PUSHDATA2',
         opcode: 77,
         hex: '0x4d',
@@ -29,7 +29,7 @@ const OPCODES = {
         description: 'The next two bytes contain the number of bytes to be pushed onto the stack in little endian order.',
         category: 'constants'
     },
-    OP_PUSHDATA4: {
+    {
         name: 'OP_PUSHDATA4',
         opcode: 78,
         hex: '0x4e',
@@ -38,7 +38,7 @@ const OPCODES = {
         description: 'The next four bytes contain the number of bytes to be pushed onto the stack in little endian order.',
         category: 'constants'
     },
-    OP_1NEGATE: {
+    {
         name: 'OP_1NEGATE',
         opcode: 79,
         hex: '0x4f',
@@ -47,7 +47,7 @@ const OPCODES = {
         description: 'The number -1 is pushed onto the stack.',
         category: 'constants'
     },
-    OP_TRUE: {
+    {
         name: 'OP_TRUE',
         opcode: 81,
         hex: '0x51',
@@ -56,7 +56,7 @@ const OPCODES = {
         description: 'The number 1 is pushed onto the stack.',
         category: 'constants'
     },
-    OP_1: {
+    {
         name: 'OP_1',
         opcode: 81,
         hex: '0x51',
@@ -65,7 +65,7 @@ const OPCODES = {
         description: 'The number 1 is pushed onto the stack.',
         category: 'constants'
     },
-    OP_2: {
+    {
         name: 'OP_2',
         opcode: 82,
         hex: '0x52',
@@ -74,7 +74,7 @@ const OPCODES = {
         description: 'The number 2 is pushed onto the stack.',
         category: 'constants'
     },
-    OP_3: {
+    {
         name: 'OP_3',
         opcode: 83,
         hex: '0x53',
@@ -83,7 +83,7 @@ const OPCODES = {
         description: 'The number 3 is pushed onto the stack.',
         category: 'constants'
     },
-    OP_4: {
+    {
         name: 'OP_4',
         opcode: 84,
         hex: '0x54',
@@ -92,7 +92,7 @@ const OPCODES = {
         description: 'The number 4 is pushed onto the stack.',
         category: 'constants'
     },
-    OP_5: {
+    {
         name: 'OP_5',
         opcode: 85,
         hex: '0x55',
@@ -101,7 +101,7 @@ const OPCODES = {
         description: 'The number 5 is pushed onto the stack.',
         category: 'constants'
     },
-    OP_6: {
+    {
         name: 'OP_6',
         opcode: 86,
         hex: '0x56',
@@ -110,7 +110,7 @@ const OPCODES = {
         description: 'The number 6 is pushed onto the stack.',
         category: 'constants'
     },
-    OP_7: {
+    {
         name: 'OP_7',
         opcode: 87,
         hex: '0x57',
@@ -119,7 +119,7 @@ const OPCODES = {
         description: 'The number 7 is pushed onto the stack.',
         category: 'constants'
     },
-    OP_8: {
+    {
         name: 'OP_8',
         opcode: 88,
         hex: '0x58',
@@ -128,7 +128,7 @@ const OPCODES = {
         description: 'The number 8 is pushed onto the stack.',
         category: 'constants'
     },
-    OP_9: {
+    {
         name: 'OP_9',
         opcode: 89,
         hex: '0x59',
@@ -137,7 +137,7 @@ const OPCODES = {
         description: 'The number 9 is pushed onto the stack.',
         category: 'constants'
     },
-    OP_10: {
+    {
         name: 'OP_10',
         opcode: 90,
         hex: '0x5a',
@@ -146,7 +146,7 @@ const OPCODES = {
         description: 'The number 10 is pushed onto the stack.',
         category: 'constants'
     },
-    OP_11: {
+    {
         name: 'OP_11',
         opcode: 91,
         hex: '0x5b',
@@ -155,7 +155,7 @@ const OPCODES = {
         description: 'The number 11 is pushed onto the stack.',
         category: 'constants'
     },
-    OP_12: {
+    {
         name: 'OP_12',
         opcode: 92,
         hex: '0x5c',
@@ -164,7 +164,7 @@ const OPCODES = {
         description: 'The number 12 is pushed onto the stack.',
         category: 'constants'
     },
-    OP_13: {
+    {
         name: 'OP_13',
         opcode: 93,
         hex: '0x5d',
@@ -173,7 +173,7 @@ const OPCODES = {
         description: 'The number 13 is pushed onto the stack.',
         category: 'constants'
     },
-    OP_14: {
+    {
         name: 'OP_14',
         opcode: 94,
         hex: '0x5e',
@@ -182,7 +182,7 @@ const OPCODES = {
         description: 'The number 14 is pushed onto the stack.',
         category: 'constants'
     },
-    OP_15: {
+    {
         name: 'OP_15',
         opcode: 95,
         hex: '0x5f',
@@ -191,7 +191,7 @@ const OPCODES = {
         description: 'The number 15 is pushed onto the stack.',
         category: 'constants'
     },
-    OP_16: {
+    {
         name: 'OP_16',
         opcode: 96,
         hex: '0x60',
@@ -202,7 +202,7 @@ const OPCODES = {
     },
     
     // flow control
-    OP_NOP: {
+    {
         name: 'OP_NOP',
         opcode: 97,
         hex: '0x61',
@@ -211,7 +211,7 @@ const OPCODES = {
         description: 'Does nothing.',
         category: 'flow control'
     },
-    OP_IF: {
+    {
         name: 'OP_IF',
         opcode: 99,
         hex: '0x63',
@@ -220,7 +220,7 @@ const OPCODES = {
         description: 'If the top stack value is not False, the statements are executed. The top stack value is removed.',
         category: 'flow control'
     },
-    OP_NOTIF: {
+    {
         name: 'OP_NOTIF',
         opcode: 100,
         hex: '0x64',
@@ -229,7 +229,7 @@ const OPCODES = {
         description: 'If the top stack value is False, the statements are executed. The top stack value is removed.',
         category: 'flow control'
     },
-    OP_ELSE: {
+    {
         name: 'OP_ELSE',
         opcode: 103,
         hex: '0x67',
@@ -238,7 +238,7 @@ const OPCODES = {
         description: 'If the preceding OP_IF or OP_NOTIF or OP_ELSE was not executed then these statements are and if the preceding OP_IF or OP_NOTIF or OP_ELSE was executed then these statements are not.',
         category: 'flow control'
     },
-    OP_ENDIF: {
+    {
         name: 'OP_ENDIF',
         opcode: 104,
         hex: '0x68',
@@ -247,7 +247,7 @@ const OPCODES = {
         description: 'Ends an if/else block. All blocks must end, or the transaction is invalid. An OP_ENDIF without OP_IF earlier is also invalid.',
         category: 'flow control'
     },
-    OP_VERIFY: {
+    {
         name: 'OP_VERIFY',
         opcode: 105,
         hex: '0x69',
@@ -256,7 +256,7 @@ const OPCODES = {
         description: 'Marks transaction as invalid if top stack value is not true. The top stack value is removed.',
         category: 'flow control'
     },
-    OP_RETURN: {
+    {
         name: 'OP_RETURN',
         opcode: 106,
         hex: '0x6a',
@@ -267,7 +267,7 @@ const OPCODES = {
     },
 
     // stack
-    OP_TOALTSTACK: {
+    {
         name: 'OP_TOALTSTACK',
         opcode: 107,
         hex: '0x6b',
@@ -276,7 +276,7 @@ const OPCODES = {
         description: 'Puts the input onto the top of the alt stack. Removes it from the main stack.',
         category: 'stack'
     },
-    OP_FROMALTSTACK: {
+    {
         name: 'OP_FROMALTSTACK',
         opcode: 108,
         hex: '0x6c',
@@ -285,7 +285,7 @@ const OPCODES = {
         description: 'Puts the input onto the top of the main stack. Removes it from the alt stack.',
         category: 'stack'
     },
-    OP_IFDUP: {
+    {
         name: 'OP_IFDUP',
         opcode: 115,
         hex: '0x73',
@@ -294,7 +294,7 @@ const OPCODES = {
         description: 'If the top stack value is not 0, duplicate it.',
         category: 'stack'
     },
-    OP_DEPTH: {
+    {
         name: 'OP_DEPTH',
         opcode: 116,
         hex: '0x74',
@@ -303,7 +303,7 @@ const OPCODES = {
         description: 'Puts the number of stack items onto the stack.',
         category: 'stack'
     },
-    OP_DROP: {
+    {
         name: 'OP_DROP',
         opcode: 117,
         hex: '0x75',
@@ -312,7 +312,7 @@ const OPCODES = {
         description: 'Removes the top stack item.',
         category: 'stack'
     },
-    OP_DUP: {
+    {
         name: 'OP_DUP',
         opcode: 118,
         hex: '0x76',
@@ -321,7 +321,7 @@ const OPCODES = {
         description: 'Duplicates the top stack item.',
         category: 'stack'
     },
-    OP_NIP: {
+    {
         name: 'OP_NIP',
         opcode: 119,
         hex: '0x77',
@@ -330,7 +330,7 @@ const OPCODES = {
         description: 'Removes the second-to-top stack item.',
         category: 'stack'
     },
-    OP_OVER: {
+    {
         name: 'OP_OVER',
         opcode: 120,
         hex: '0x78',
@@ -339,7 +339,7 @@ const OPCODES = {
         description: 'Copies the second-to-top stack item to the top.',
         category: 'stack'
     },
-    OP_PICK: {
+    {
         name: 'OP_PICK',
         opcode: 121,
         hex: '0x79',
@@ -348,7 +348,7 @@ const OPCODES = {
         description: 'The item n back in the stack is copied to the top.',
         category: 'stack'
     },
-    OP_ROLL: {
+    {
         name: 'OP_ROLL',
         opcode: 122,
         hex: '0x7a',
@@ -357,7 +357,7 @@ const OPCODES = {
         description: 'The item n back in the stack is moved to the top.',
         category: 'stack'
     },
-    OP_ROT: {
+    {
         name: 'OP_ROT',
         opcode: 123,
         hex: '0x7b',
@@ -366,7 +366,7 @@ const OPCODES = {
         description: 'The 3rd item down the stack is moved to the top.',
         category: 'stack'
     },
-    OP_SWAP: {
+    {
         name: 'OP_SWAP',
         opcode: 124,
         hex: '0x7c',
@@ -375,7 +375,7 @@ const OPCODES = {
         description: 'The top two items on the stack are swapped.',
         category: 'stack'
     },
-    OP_TUCK: {
+    {
         name: 'OP_TUCK',
         opcode: 125,
         hex: '0x7d',
@@ -384,7 +384,7 @@ const OPCODES = {
         description: 'The item at the top of the stack is copied and inserted before the second-to-top item.',
         category: 'stack'
     },
-    OP_2DROP: {
+    {
         name: 'OP_2DROP',
         opcode: 109,
         hex: '0x6d',
@@ -393,7 +393,7 @@ const OPCODES = {
         description: 'Removes the top two stack items.',
         category: 'stack'
     },
-    OP_2DUP: {
+    {
         name: 'OP_2DUP',
         opcode: 110,
         hex: '0x6e',
@@ -402,7 +402,7 @@ const OPCODES = {
         description: 'Duplicates the top two stack items.',
         category: 'stack'
     },
-    OP_3DUP: {
+    {
         name: 'OP_3DUP',
         opcode: 111,
         hex: '0x6f',
@@ -411,7 +411,7 @@ const OPCODES = {
         description: 'Duplicates the top three stack items.',
         category: 'stack'
     },
-    OP_2OVER: {
+    {
         name: 'OP_2OVER',
         opcode: 112,
         hex: '0x70',
@@ -420,7 +420,7 @@ const OPCODES = {
         description: 'Copies the pair of items two spaces back in the stack to the front.',
         category: 'stack'
     },
-    OP_2ROT: {
+    {
         name: 'OP_2ROT',
         opcode: 113,
         hex: '0x71',
@@ -429,7 +429,7 @@ const OPCODES = {
         description: 'The fifth and sixth items back are moved to the top of the stack.',
         category: 'stack'
     },
-    OP_2SWAP: {
+    {
         name: 'OP_2SWAP',
         opcode: 114,
         hex: '0x72',
@@ -440,7 +440,7 @@ const OPCODES = {
     },
 
     // splice
-    OP_CAT: {
+    {
         name: 'OP_CAT',
         opcode: 126,
         hex: '0x7e',
@@ -450,7 +450,7 @@ const OPCODES = {
         category: 'splice',
         disabled: true
     },
-    OP_SUBSTR: {
+    {
         name: 'OP_SUBSTR',
         opcode: 127,
         hex: '0x7f',
@@ -460,7 +460,7 @@ const OPCODES = {
         category: 'splice',
         disabled: true
     },
-    OP_LEFT: {
+    {
         name: 'OP_LEFT',
         opcode: 128,
         hex: '0x80',
@@ -470,7 +470,7 @@ const OPCODES = {
         category: 'splice',
         disabled: true
     },
-    OP_RIGHT: {
+    {
         name: 'OP_RIGHT',
         opcode: 129,
         hex: '0x81',
@@ -480,7 +480,7 @@ const OPCODES = {
         category: 'splice',
         disabled: true
     },
-    OP_SIZE: {
+    {
         name: 'OP_SIZE',
         opcode: 130,
         hex: '0x82',
@@ -491,7 +491,7 @@ const OPCODES = {
     },
 
     // bitwise logic
-    OP_INVERT: {
+    {
         name: 'OP_INVERT',
         opcode: 131,
         hex: '0x83',
@@ -501,7 +501,7 @@ const OPCODES = {
         category: 'bitwise logic',
         disabled: true
     },
-    OP_AND: {
+    {
         name: 'OP_AND',
         opcode: 132,
         hex: '0x84',
@@ -511,7 +511,7 @@ const OPCODES = {
         category: 'bitwise logic',
         disabled: true
     },
-    OP_OR: {
+    {
         name: 'OP_OR',
         opcode: 133,
         hex: '0x85',
@@ -521,7 +521,7 @@ const OPCODES = {
         category: 'bitwise logic',
         disabled: true
     },
-    OP_XOR: {
+    {
         name: 'OP_XOR',
         opcode: 134,
         hex: '0x86',
@@ -531,7 +531,7 @@ const OPCODES = {
         category: 'bitwise logic',
         disabled: true
     },
-    OP_EQUAL: {
+    {
         name: 'OP_EQUAL',
         opcode: 135,
         hex: '0x87',
@@ -540,7 +540,7 @@ const OPCODES = {
         description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.',
         category: 'bitwise logic'
     },
-    OP_EQUALVERIFY: {
+    {
         name: 'OP_EQUALVERIFY',
         opcode: 136,
         hex: '0x88',
@@ -551,7 +551,7 @@ const OPCODES = {
     },
 
     // arithmetic
-    OP_1ADD: {
+    {
         name: 'OP_1ADD',
         opcode: 139,
         hex: '0x8b',
@@ -560,7 +560,7 @@ const OPCODES = {
         description: '1 is added to the input.',
         category: 'arithmetic'
     },
-    OP_1SUB: {
+    {
         name: 'OP_1SUB',
         opcode: 140,
         hex: '0x8c',
@@ -569,7 +569,7 @@ const OPCODES = {
         description: '1 is subtracted from the input.',
         category: 'arithmetic'
     },
-    OP_2MUL: {
+    {
         name: 'OP_2MUL',
         opcode: 141,
         hex: '0x8d',
@@ -579,7 +579,7 @@ const OPCODES = {
         category: 'arithmetic',
         disabled: true
     },
-    OP_2DIV: {
+    {
         name: 'OP_2DIV',
         opcode: 142,
         hex: '0x8e',
@@ -589,7 +589,7 @@ const OPCODES = {
         category: 'arithmetic',
         disabled: true
     },
-    OP_NEGATE: {
+    {
         name: 'OP_NEGATE',
         opcode: 143,
         hex: '0x8f',
@@ -598,7 +598,7 @@ const OPCODES = {
         description: 'The sign of the input is flipped.',
         category: 'arithmetic'
     },
-    OP_ABS: {
+    {
         name: 'OP_ABS',
         opcode: 144,
         hex: '0x90',
@@ -607,7 +607,7 @@ const OPCODES = {
         description: 'The input is made positive.',
         category: 'arithmetic'
     },
-    OP_NOT: {
+    {
         name: 'OP_NOT',
         opcode: 145,
         hex: '0x91',
@@ -616,7 +616,7 @@ const OPCODES = {
         description: 'If the input is 0 or 1, it is flipped. Otherwise the output will be 0.',
         category: 'arithmetic'
     },
-    OP_0NOTEQUAL: {
+    {
         name: 'OP_0NOTEQUAL',
         opcode: 146,
         hex: '0x92',
@@ -625,7 +625,7 @@ const OPCODES = {
         description: 'Returns 0 if the input is 0. 1 otherwise.',
         category: 'arithmetic'
     },
-    OP_ADD: {
+    {
         name: 'OP_ADD',
         opcode: 147,
         hex: '0x93',
@@ -634,7 +634,7 @@ const OPCODES = {
         description: 'a is added to b.',
         category: 'arithmetic'
     },
-    OP_SUB: {
+    {
         name: 'OP_SUB',
         opcode: 148,
         hex: '0x94',
@@ -643,7 +643,7 @@ const OPCODES = {
         description: 'b is subtracted from a.',
         category: 'arithmetic'
     },
-    OP_MUL: {
+    {
         name: 'OP_MUL',
         opcode: 149,
         hex: '0x95',
@@ -653,7 +653,7 @@ const OPCODES = {
         category: 'arithmetic',
         disabled: true
     },
-    OP_DIV: {
+    {
         name: 'OP_DIV',
         opcode: 150,
         hex: '0x96',
@@ -663,7 +663,7 @@ const OPCODES = {
         category: 'arithmetic',
         disabled: true
     },
-    OP_MOD: {
+    {
         name: 'OP_MOD',
         opcode: 151,
         hex: '0x97',
@@ -673,7 +673,7 @@ const OPCODES = {
         category: 'arithmetic',
         disabled: true
     },
-    OP_LSHIFT: {
+    {
         name: 'OP_LSHIFT',
         opcode: 152,
         hex: '0x98',
@@ -683,7 +683,7 @@ const OPCODES = {
         category: 'arithmetic',
         disabled: true
     },
-    OP_RSHIFT: {
+    {
         name: 'OP_RSHIFT',
         opcode: 153,
         hex: '0x99',
@@ -693,7 +693,7 @@ const OPCODES = {
         category: 'arithmetic',
         disabled: true
     },
-    OP_BOOLAND: {
+    {
         name: 'OP_BOOLAND',
         opcode: 154,
         hex: '0x9a',
@@ -702,7 +702,7 @@ const OPCODES = {
         description: 'If both a and b are not 0, the output is 1. Otherwise 0.',
         category: 'arithmetic'
     },
-    OP_BOOLOR: {
+    {
         name: 'OP_BOOLOR',
         opcode: 155,
         hex: '0x9b',
@@ -711,7 +711,7 @@ const OPCODES = {
         description: 'If a or b is not 0, the output is 1. Otherwise 0.',
         category: 'arithmetic'
     },
-    OP_NUMEQUAL: {
+    {
         name: 'OP_NUMEQUAL',
         opcode: 156,
         hex: '0x9c',
@@ -720,7 +720,7 @@ const OPCODES = {
         description: 'Returns 1 if the numbers are equal, 0 otherwise.',
         category: 'arithmetic'
     },
-    OP_NUMEQUALVERIFY: {
+    {
         name: 'OP_NUMEQUALVERIFY',
         opcode: 157,
         hex: '0x9d',
@@ -729,7 +729,7 @@ const OPCODES = {
         description: 'Same as OP_NUMEQUAL, but runs OP_VERIFY afterward.',
         category: 'arithmetic'
     },
-    OP_NUMNOTEQUAL: {
+    {
         name: 'OP_NUMNOTEQUAL',
         opcode: 158,
         hex: '0x9e',
@@ -738,7 +738,7 @@ const OPCODES = {
         description: 'Returns 1 if the numbers are not equal, 0 otherwise.',
         category: 'arithmetic'
     },
-    OP_LESSTHAN: {
+    {
         name: 'OP_LESSTHAN',
         opcode: 159,
         hex: '0x9f',
@@ -747,7 +747,7 @@ const OPCODES = {
         description: 'Returns 1 if a is less than b, 0 otherwise.',
         category: 'arithmetic'
     },
-    OP_GREATERTHAN: {
+    {
         name: 'OP_GREATERTHAN',
         opcode: 160,
         hex: '0xa0',
@@ -756,7 +756,7 @@ const OPCODES = {
         description: 'Returns 1 if a is greater than b, 0 otherwise.',
         category: 'arithmetic'
     },
-    OP_LESSTHANOREQUAL: {
+    {
         name: 'OP_LESSTHANOREQUAL',
         opcode: 161,
         hex: '0xa1',
@@ -765,7 +765,7 @@ const OPCODES = {
         description: 'Returns 1 if a is less than or equal to b, 0 otherwise.',
         category: 'arithmetic'
     },
-    OP_GREATERTHANOREQUAL: {
+    {
         name: 'OP_GREATERTHANOREQUAL',
         opcode: 162,
         hex: '0xa2',
@@ -774,7 +774,7 @@ const OPCODES = {
         description: 'Returns 1 if a is greater than or equal to b, 0 otherwise.',
         category: 'arithmetic'
     },
-    OP_MIN: {
+    {
         name: 'OP_MIN',
         opcode: 163,
         hex: '0xa3',
@@ -783,7 +783,7 @@ const OPCODES = {
         description: 'Returns the smaller of a and b.',
         category: 'arithmetic'
     },
-    OP_MAX: {
+    {
         name: 'OP_MAX',
         opcode: 164,
         hex: '0xa4',
@@ -792,7 +792,7 @@ const OPCODES = {
         description: 'Returns the larger of a and b.',
         category: 'arithmetic'
     },
-    OP_WITHIN: {
+    {
         name: 'OP_WITHIN',
         opcode: 165,
         hex: '0xa5',
@@ -803,7 +803,7 @@ const OPCODES = {
     },
 
     // crypto
-    OP_RIPEMD160: {
+    {
         name: 'OP_RIPEMD160',
         opcode: 166,
         hex: '0xa6',
@@ -812,7 +812,7 @@ const OPCODES = {
         description: 'The input is hashed using RIPEMD-160.',
         category: 'crypto'
     },
-    OP_SHA1: {
+    {
         name: 'OP_SHA1',
         opcode: 167,
         hex: '0xa7',
@@ -821,7 +821,7 @@ const OPCODES = {
         description: 'The input is hashed using SHA-1.',
         category: 'crypto'
     },
-    OP_SHA256: {
+    {
         name: 'OP_SHA256',
         opcode: 168,
         hex: '0xa8',
@@ -830,7 +830,7 @@ const OPCODES = {
         description: 'The input is hashed using SHA-256.',
         category: 'crypto'
     },
-    OP_HASH160: {
+    {
         name: 'OP_HASH160',
         opcode: 169,
         hex: '0xa9',
@@ -839,7 +839,7 @@ const OPCODES = {
         description: 'The input is hashed twice: first with SHA-256 and then with RIPEMD-160.',
         category: 'crypto'
     },
-    OP_HASH256: {
+    {
         name: 'OP_HASH256',
         opcode: 170,
         hex: '0xaa',
@@ -848,7 +848,7 @@ const OPCODES = {
         description: 'The input is hashed two times with SHA-256.',
         category: 'crypto'
     },
-    OP_CODESEPARATOR: {
+    {
         name: 'OP_CODESEPARATOR',
         opcode: 171,
         hex: '0xab',
@@ -857,7 +857,7 @@ const OPCODES = {
         description: 'All of the signature checking words will only match signatures to the data after the most recently-executed OP_CODESEPARATOR.',
         category: 'crypto'
     },
-    OP_CHECKSIG: {
+    {
         name: 'OP_CHECKSIG',
         opcode: 172,
         hex: '0xac',
@@ -866,7 +866,7 @@ const OPCODES = {
         description: "The entire transaction's outputs, inputs, and script (from the most recently-executed OP_CODESEPARATOR to the end) are hashed. The signature used by OP_CHECKSIG must be a valid signature for this hash and public key. If it is, 1 is returned, 0 otherwise.",
         category: 'crypto'
     },
-    OP_CHECKSIGVERIFY: {
+    {
         name: 'OP_CHECKSIGVERIFY',
         opcode: 173,
         hex: '0xad',
@@ -875,7 +875,7 @@ const OPCODES = {
         description: 'Same as OP_CHECKSIG, but OP_VERIFY is executed afterward.',
         category: 'crypto'
     },
-    OP_CHECKMULTISIG: {
+    {
         name: 'OP_CHECKMULTISIG',
         opcode: 174,
         hex: '0xae',
@@ -884,7 +884,7 @@ const OPCODES = {
         description: 'Compares the first signature against each public key until it finds an ECDSA match. Starting with the subsequent public key, it compares the second signature against each remaining public key until it finds an ECDSA match. The process is repeated until all signatures have been checked or not enough public keys remain to produce a successful result. All signatures need to match a public key. If all signatures are valid, 1 is returned, 0 otherwise.',
         category: 'crypto'
     },
-    OP_CHECKMULTISIGVERIFY: {
+    {
         name: 'OP_CHECKMULTISIGVERIFY',
         opcode: 175,
         hex: '0xaf',
@@ -893,7 +893,7 @@ const OPCODES = {
         description: 'Same as OP_CHECKMULTISIG, but OP_VERIFY is executed afterward.',
         category: 'crypto'
     },
-    OP_CHECKSIGADD: {
+    {
         name: 'OP_CHECKSIGADD',
         opcode: 186,
         hex: '0xba',
@@ -904,7 +904,7 @@ const OPCODES = {
     },
 
     // locktime
-    OP_CHECKLOCKTIMEVERIFY: {
+    {
         name: 'OP_CHECKLOCKTIMEVERIFY',
         opcode: 177,
         hex: '0xb1',
@@ -913,7 +913,7 @@ const OPCODES = {
         description: "Marks transaction as invalid if the top stack item is greater than the transaction's nLockTime field, otherwise script evaluation continues as though an OP_NOP was executed. Transaction is also invalid if 1. the stack is empty; or 2. the top stack item is negative; or 3. the top stack item is greater than or equal to 500000000 while the transaction's nLockTime field is less than 500000000, or vice versa; or 4. the input's nSequence field is equal to 0xffffffff. The precise semantics are described in BIP 0065.",
         category: 'locktime'
     },
-    OP_CHECKSEQUENCEVERIFY: {
+    {
         name: 'OP_CHECKSEQUENCEVERIFY',
         opcode: 178,
         hex: '0xb2',
@@ -922,4 +922,4 @@ const OPCODES = {
         description: "Marks transaction as invalid if the relative lock time of the input (enforced by BIP 0068 with nSequence) is not equal to or longer than the value of the top stack item. The precise semantics are described in BIP 0112.",
         category: 'locktime'
     }
-};
+];

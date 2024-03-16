@@ -3,7 +3,7 @@
 export const OPCODES = [
     // constants
     {
-        name: 'OP_0',
+        label: 'OP_0',
         opcode: 0, 
         hex: '0x00', 
         input: 'Nothing.', 
@@ -12,7 +12,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_PUSHDATA1',
+        label: 'OP_PUSHDATA1',
         opcode: 76,
         hex: '0x4c',
         input: '(special)',
@@ -21,7 +21,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_PUSHDATA2',
+        label: 'OP_PUSHDATA2',
         opcode: 77,
         hex: '0x4d',
         input: '(special)',
@@ -30,7 +30,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_PUSHDATA4',
+        label: 'OP_PUSHDATA4',
         opcode: 78,
         hex: '0x4e',
         input: '(special)',
@@ -39,7 +39,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_1NEGATE',
+        label: 'OP_1NEGATE',
         opcode: 79,
         hex: '0x4f',
         input: 'Nothing.',
@@ -48,7 +48,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_TRUE',
+        label: 'OP_TRUE',
         opcode: 81,
         hex: '0x51',
         input: 'Nothing.',
@@ -57,7 +57,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_1',
+        label: 'OP_1',
         opcode: 81,
         hex: '0x51',
         input: 'Nothing.',
@@ -66,7 +66,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_2',
+        label: 'OP_2',
         opcode: 82,
         hex: '0x52',
         input: 'Nothing.',
@@ -75,7 +75,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_3',
+        label: 'OP_3',
         opcode: 83,
         hex: '0x53',
         input: 'Nothing.',
@@ -84,7 +84,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_4',
+        label: 'OP_4',
         opcode: 84,
         hex: '0x54',
         input: 'Nothing.',
@@ -93,7 +93,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_5',
+        label: 'OP_5',
         opcode: 85,
         hex: '0x55',
         input: 'Nothing.',
@@ -102,7 +102,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_6',
+        label: 'OP_6',
         opcode: 86,
         hex: '0x56',
         input: 'Nothing.',
@@ -111,7 +111,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_7',
+        label: 'OP_7',
         opcode: 87,
         hex: '0x57',
         input: 'Nothing.',
@@ -120,7 +120,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_8',
+        label: 'OP_8',
         opcode: 88,
         hex: '0x58',
         input: 'Nothing.',
@@ -129,7 +129,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_9',
+        label: 'OP_9',
         opcode: 89,
         hex: '0x59',
         input: 'Nothing.',
@@ -138,7 +138,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_10',
+        label: 'OP_10',
         opcode: 90,
         hex: '0x5a',
         input: 'Nothing.',
@@ -147,7 +147,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_11',
+        label: 'OP_11',
         opcode: 91,
         hex: '0x5b',
         input: 'Nothing.',
@@ -156,7 +156,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_12',
+        label: 'OP_12',
         opcode: 92,
         hex: '0x5c',
         input: 'Nothing.',
@@ -165,7 +165,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_13',
+        label: 'OP_13',
         opcode: 93,
         hex: '0x5d',
         input: 'Nothing.',
@@ -174,7 +174,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_14',
+        label: 'OP_14',
         opcode: 94,
         hex: '0x5e',
         input: 'Nothing.',
@@ -183,7 +183,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_15',
+        label: 'OP_15',
         opcode: 95,
         hex: '0x5f',
         input: 'Nothing.',
@@ -192,7 +192,7 @@ export const OPCODES = [
         category: 'constants'
     },
     {
-        name: 'OP_16',
+        label: 'OP_16',
         opcode: 96,
         hex: '0x60',
         input: 'Nothing.',
@@ -203,7 +203,7 @@ export const OPCODES = [
     
     // flow control
     {
-        name: 'OP_NOP',
+        label: 'OP_NOP',
         opcode: 97,
         hex: '0x61',
         input: 'Nothing.',
@@ -212,7 +212,7 @@ export const OPCODES = [
         category: 'flow control'
     },
     {
-        name: 'OP_IF',
+        label: 'OP_IF',
         opcode: 99,
         hex: '0x63',
         input: '<expression> if [statements] [else [statements]]* endif',
@@ -221,7 +221,7 @@ export const OPCODES = [
         category: 'flow control'
     },
     {
-        name: 'OP_NOTIF',
+        label: 'OP_NOTIF',
         opcode: 100,
         hex: '0x64',
         input: '<expression> notif [statements] [else [statements]]* endif',
@@ -230,7 +230,7 @@ export const OPCODES = [
         category: 'flow control'
     },
     {
-        name: 'OP_ELSE',
+        label: 'OP_ELSE',
         opcode: 103,
         hex: '0x67',
         input: '<expression> if [statements] [else [statements]]* endif',
@@ -239,7 +239,7 @@ export const OPCODES = [
         category: 'flow control'
     },
     {
-        name: 'OP_ENDIF',
+        label: 'OP_ENDIF',
         opcode: 104,
         hex: '0x68',
         input: '<expression> if [statements] [else [statements]]* endif',
@@ -248,7 +248,7 @@ export const OPCODES = [
         category: 'flow control'
     },
     {
-        name: 'OP_VERIFY',
+        label: 'OP_VERIFY',
         opcode: 105,
         hex: '0x69',
         input: 'True / false',
@@ -257,7 +257,7 @@ export const OPCODES = [
         category: 'flow control'
     },
     {
-        name: 'OP_RETURN',
+        label: 'OP_RETURN',
         opcode: 106,
         hex: '0x6a',
         input: 'Nothing',
@@ -268,7 +268,7 @@ export const OPCODES = [
 
     // stack
     {
-        name: 'OP_TOALTSTACK',
+        label: 'OP_TOALTSTACK',
         opcode: 107,
         hex: '0x6b',
         input: 'x1',
@@ -277,7 +277,7 @@ export const OPCODES = [
         category: 'stack'
     },
     {
-        name: 'OP_FROMALTSTACK',
+        label: 'OP_FROMALTSTACK',
         opcode: 108,
         hex: '0x6c',
         input: '(alt)x1',
@@ -286,7 +286,7 @@ export const OPCODES = [
         category: 'stack'
     },
     {
-        name: 'OP_IFDUP',
+        label: 'OP_IFDUP',
         opcode: 115,
         hex: '0x73',
         input: 'x',
@@ -295,7 +295,7 @@ export const OPCODES = [
         category: 'stack'
     },
     {
-        name: 'OP_DEPTH',
+        label: 'OP_DEPTH',
         opcode: 116,
         hex: '0x74',
         input: 'Nothing',
@@ -304,7 +304,7 @@ export const OPCODES = [
         category: 'stack'
     },
     {
-        name: 'OP_DROP',
+        label: 'OP_DROP',
         opcode: 117,
         hex: '0x75',
         input: 'x',
@@ -313,7 +313,7 @@ export const OPCODES = [
         category: 'stack'
     },
     {
-        name: 'OP_DUP',
+        label: 'OP_DUP',
         opcode: 118,
         hex: '0x76',
         input: 'x',
@@ -322,7 +322,7 @@ export const OPCODES = [
         category: 'stack'
     },
     {
-        name: 'OP_NIP',
+        label: 'OP_NIP',
         opcode: 119,
         hex: '0x77',
         input: 'x1 x2',
@@ -331,7 +331,7 @@ export const OPCODES = [
         category: 'stack'
     },
     {
-        name: 'OP_OVER',
+        label: 'OP_OVER',
         opcode: 120,
         hex: '0x78',
         input: 'x1 x2',
@@ -340,7 +340,7 @@ export const OPCODES = [
         category: 'stack'
     },
     {
-        name: 'OP_PICK',
+        label: 'OP_PICK',
         opcode: 121,
         hex: '0x79',
         input: 'xn ... x2 x1 x0 <n>',
@@ -349,7 +349,7 @@ export const OPCODES = [
         category: 'stack'
     },
     {
-        name: 'OP_ROLL',
+        label: 'OP_ROLL',
         opcode: 122,
         hex: '0x7a',
         input: 'xn ... x2 x1 x0 <n>',
@@ -358,7 +358,7 @@ export const OPCODES = [
         category: 'stack'
     },
     {
-        name: 'OP_ROT',
+        label: 'OP_ROT',
         opcode: 123,
         hex: '0x7b',
         input: 'x1 x2 x3',
@@ -367,7 +367,7 @@ export const OPCODES = [
         category: 'stack'
     },
     {
-        name: 'OP_SWAP',
+        label: 'OP_SWAP',
         opcode: 124,
         hex: '0x7c',
         input: 'x1 x2',
@@ -376,7 +376,7 @@ export const OPCODES = [
         category: 'stack'
     },
     {
-        name: 'OP_TUCK',
+        label: 'OP_TUCK',
         opcode: 125,
         hex: '0x7d',
         input: 'x1 x2',
@@ -385,7 +385,7 @@ export const OPCODES = [
         category: 'stack'
     },
     {
-        name: 'OP_2DROP',
+        label: 'OP_2DROP',
         opcode: 109,
         hex: '0x6d',
         input: 'x1 x2',
@@ -394,7 +394,7 @@ export const OPCODES = [
         category: 'stack'
     },
     {
-        name: 'OP_2DUP',
+        label: 'OP_2DUP',
         opcode: 110,
         hex: '0x6e',
         input: 'x1 x2',
@@ -403,7 +403,7 @@ export const OPCODES = [
         category: 'stack'
     },
     {
-        name: 'OP_3DUP',
+        label: 'OP_3DUP',
         opcode: 111,
         hex: '0x6f',
         input: 'x1 x2 x3',
@@ -412,7 +412,7 @@ export const OPCODES = [
         category: 'stack'
     },
     {
-        name: 'OP_2OVER',
+        label: 'OP_2OVER',
         opcode: 112,
         hex: '0x70',
         input: 'x1 x2 x3 x4',
@@ -421,7 +421,7 @@ export const OPCODES = [
         category: 'stack'
     },
     {
-        name: 'OP_2ROT',
+        label: 'OP_2ROT',
         opcode: 113,
         hex: '0x71',
         input: 'x1 x2 x3 x4 x5 x6',
@@ -430,7 +430,7 @@ export const OPCODES = [
         category: 'stack'
     },
     {
-        name: 'OP_2SWAP',
+        label: 'OP_2SWAP',
         opcode: 114,
         hex: '0x72',
         input: 'x1 x2 x3 x4',
@@ -441,7 +441,7 @@ export const OPCODES = [
 
     // splice
     {
-        name: 'OP_CAT',
+        label: 'OP_CAT',
         opcode: 126,
         hex: '0x7e',
         input: 'x1 x2',
@@ -451,7 +451,7 @@ export const OPCODES = [
         disabled: true
     },
     {
-        name: 'OP_SUBSTR',
+        label: 'OP_SUBSTR',
         opcode: 127,
         hex: '0x7f',
         input: 'in begin size',
@@ -461,7 +461,7 @@ export const OPCODES = [
         disabled: true
     },
     {
-        name: 'OP_LEFT',
+        label: 'OP_LEFT',
         opcode: 128,
         hex: '0x80',
         input: 'in size',
@@ -471,7 +471,7 @@ export const OPCODES = [
         disabled: true
     },
     {
-        name: 'OP_RIGHT',
+        label: 'OP_RIGHT',
         opcode: 129,
         hex: '0x81',
         input: 'in size',
@@ -481,7 +481,7 @@ export const OPCODES = [
         disabled: true
     },
     {
-        name: 'OP_SIZE',
+        label: 'OP_SIZE',
         opcode: 130,
         hex: '0x82',
         input: 'in',
@@ -492,7 +492,7 @@ export const OPCODES = [
 
     // bitwise logic
     {
-        name: 'OP_INVERT',
+        label: 'OP_INVERT',
         opcode: 131,
         hex: '0x83',
         input: 'in',
@@ -502,7 +502,7 @@ export const OPCODES = [
         disabled: true
     },
     {
-        name: 'OP_AND',
+        label: 'OP_AND',
         opcode: 132,
         hex: '0x84',
         input: 'x1 x2',
@@ -512,7 +512,7 @@ export const OPCODES = [
         disabled: true
     },
     {
-        name: 'OP_OR',
+        label: 'OP_OR',
         opcode: 133,
         hex: '0x85',
         input: 'x1 x2',
@@ -522,7 +522,7 @@ export const OPCODES = [
         disabled: true
     },
     {
-        name: 'OP_XOR',
+        label: 'OP_XOR',
         opcode: 134,
         hex: '0x86',
         input: 'x1 x2',
@@ -532,7 +532,7 @@ export const OPCODES = [
         disabled: true
     },
     {
-        name: 'OP_EQUAL',
+        label: 'OP_EQUAL',
         opcode: 135,
         hex: '0x87',
         input: 'x1 x2',
@@ -541,7 +541,7 @@ export const OPCODES = [
         category: 'bitwise logic'
     },
     {
-        name: 'OP_EQUALVERIFY',
+        label: 'OP_EQUALVERIFY',
         opcode: 136,
         hex: '0x88',
         input: 'x1 x2',
@@ -552,7 +552,7 @@ export const OPCODES = [
 
     // arithmetic
     {
-        name: 'OP_1ADD',
+        label: 'OP_1ADD',
         opcode: 139,
         hex: '0x8b',
         input: 'in',
@@ -561,7 +561,7 @@ export const OPCODES = [
         category: 'arithmetic'
     },
     {
-        name: 'OP_1SUB',
+        label: 'OP_1SUB',
         opcode: 140,
         hex: '0x8c',
         input: 'in',
@@ -570,7 +570,7 @@ export const OPCODES = [
         category: 'arithmetic'
     },
     {
-        name: 'OP_2MUL',
+        label: 'OP_2MUL',
         opcode: 141,
         hex: '0x8d',
         input: 'in',
@@ -580,7 +580,7 @@ export const OPCODES = [
         disabled: true
     },
     {
-        name: 'OP_2DIV',
+        label: 'OP_2DIV',
         opcode: 142,
         hex: '0x8e',
         input: 'in',
@@ -590,7 +590,7 @@ export const OPCODES = [
         disabled: true
     },
     {
-        name: 'OP_NEGATE',
+        label: 'OP_NEGATE',
         opcode: 143,
         hex: '0x8f',
         input: 'in',
@@ -599,7 +599,7 @@ export const OPCODES = [
         category: 'arithmetic'
     },
     {
-        name: 'OP_ABS',
+        label: 'OP_ABS',
         opcode: 144,
         hex: '0x90',
         input: 'in',
@@ -608,7 +608,7 @@ export const OPCODES = [
         category: 'arithmetic'
     },
     {
-        name: 'OP_NOT',
+        label: 'OP_NOT',
         opcode: 145,
         hex: '0x91',
         input: 'in',
@@ -617,7 +617,7 @@ export const OPCODES = [
         category: 'arithmetic'
     },
     {
-        name: 'OP_0NOTEQUAL',
+        label: 'OP_0NOTEQUAL',
         opcode: 146,
         hex: '0x92',
         input: 'in',
@@ -626,7 +626,7 @@ export const OPCODES = [
         category: 'arithmetic'
     },
     {
-        name: 'OP_ADD',
+        label: 'OP_ADD',
         opcode: 147,
         hex: '0x93',
         input: 'a b',
@@ -635,7 +635,7 @@ export const OPCODES = [
         category: 'arithmetic'
     },
     {
-        name: 'OP_SUB',
+        label: 'OP_SUB',
         opcode: 148,
         hex: '0x94',
         input: 'a b',
@@ -644,7 +644,7 @@ export const OPCODES = [
         category: 'arithmetic'
     },
     {
-        name: 'OP_MUL',
+        label: 'OP_MUL',
         opcode: 149,
         hex: '0x95',
         input: 'a b',
@@ -654,7 +654,7 @@ export const OPCODES = [
         disabled: true
     },
     {
-        name: 'OP_DIV',
+        label: 'OP_DIV',
         opcode: 150,
         hex: '0x96',
         input: 'a b',
@@ -664,7 +664,7 @@ export const OPCODES = [
         disabled: true
     },
     {
-        name: 'OP_MOD',
+        label: 'OP_MOD',
         opcode: 151,
         hex: '0x97',
         input: 'a b',
@@ -674,7 +674,7 @@ export const OPCODES = [
         disabled: true
     },
     {
-        name: 'OP_LSHIFT',
+        label: 'OP_LSHIFT',
         opcode: 152,
         hex: '0x98',
         input: 'a b',
@@ -684,7 +684,7 @@ export const OPCODES = [
         disabled: true
     },
     {
-        name: 'OP_RSHIFT',
+        label: 'OP_RSHIFT',
         opcode: 153,
         hex: '0x99',
         input: 'a b',
@@ -694,7 +694,7 @@ export const OPCODES = [
         disabled: true
     },
     {
-        name: 'OP_BOOLAND',
+        label: 'OP_BOOLAND',
         opcode: 154,
         hex: '0x9a',
         input: 'a b',
@@ -703,7 +703,7 @@ export const OPCODES = [
         category: 'arithmetic'
     },
     {
-        name: 'OP_BOOLOR',
+        label: 'OP_BOOLOR',
         opcode: 155,
         hex: '0x9b',
         input: 'a b',
@@ -712,7 +712,7 @@ export const OPCODES = [
         category: 'arithmetic'
     },
     {
-        name: 'OP_NUMEQUAL',
+        label: 'OP_NUMEQUAL',
         opcode: 156,
         hex: '0x9c',
         input: 'a b',
@@ -721,7 +721,7 @@ export const OPCODES = [
         category: 'arithmetic'
     },
     {
-        name: 'OP_NUMEQUALVERIFY',
+        label: 'OP_NUMEQUALVERIFY',
         opcode: 157,
         hex: '0x9d',
         input: 'a b',
@@ -730,7 +730,7 @@ export const OPCODES = [
         category: 'arithmetic'
     },
     {
-        name: 'OP_NUMNOTEQUAL',
+        label: 'OP_NUMNOTEQUAL',
         opcode: 158,
         hex: '0x9e',
         input: 'a b',
@@ -739,7 +739,7 @@ export const OPCODES = [
         category: 'arithmetic'
     },
     {
-        name: 'OP_LESSTHAN',
+        label: 'OP_LESSTHAN',
         opcode: 159,
         hex: '0x9f',
         input: 'a b',
@@ -748,7 +748,7 @@ export const OPCODES = [
         category: 'arithmetic'
     },
     {
-        name: 'OP_GREATERTHAN',
+        label: 'OP_GREATERTHAN',
         opcode: 160,
         hex: '0xa0',
         input: 'a b',
@@ -757,7 +757,7 @@ export const OPCODES = [
         category: 'arithmetic'
     },
     {
-        name: 'OP_LESSTHANOREQUAL',
+        label: 'OP_LESSTHANOREQUAL',
         opcode: 161,
         hex: '0xa1',
         input: 'a b',
@@ -766,7 +766,7 @@ export const OPCODES = [
         category: 'arithmetic'
     },
     {
-        name: 'OP_GREATERTHANOREQUAL',
+        label: 'OP_GREATERTHANOREQUAL',
         opcode: 162,
         hex: '0xa2',
         input: 'a b',
@@ -775,7 +775,7 @@ export const OPCODES = [
         category: 'arithmetic'
     },
     {
-        name: 'OP_MIN',
+        label: 'OP_MIN',
         opcode: 163,
         hex: '0xa3',
         input: 'a b',
@@ -784,7 +784,7 @@ export const OPCODES = [
         category: 'arithmetic'
     },
     {
-        name: 'OP_MAX',
+        label: 'OP_MAX',
         opcode: 164,
         hex: '0xa4',
         input: 'a b',
@@ -793,7 +793,7 @@ export const OPCODES = [
         category: 'arithmetic'
     },
     {
-        name: 'OP_WITHIN',
+        label: 'OP_WITHIN',
         opcode: 165,
         hex: '0xa5',
         input: 'x min max',
@@ -804,7 +804,7 @@ export const OPCODES = [
 
     // crypto
     {
-        name: 'OP_RIPEMD160',
+        label: 'OP_RIPEMD160',
         opcode: 166,
         hex: '0xa6',
         input: 'in',
@@ -813,7 +813,7 @@ export const OPCODES = [
         category: 'crypto'
     },
     {
-        name: 'OP_SHA1',
+        label: 'OP_SHA1',
         opcode: 167,
         hex: '0xa7',
         input: 'in',
@@ -822,7 +822,7 @@ export const OPCODES = [
         category: 'crypto'
     },
     {
-        name: 'OP_SHA256',
+        label: 'OP_SHA256',
         opcode: 168,
         hex: '0xa8',
         input: 'in',
@@ -831,7 +831,7 @@ export const OPCODES = [
         category: 'crypto'
     },
     {
-        name: 'OP_HASH160',
+        label: 'OP_HASH160',
         opcode: 169,
         hex: '0xa9',
         input: 'in',
@@ -840,7 +840,7 @@ export const OPCODES = [
         category: 'crypto'
     },
     {
-        name: 'OP_HASH256',
+        label: 'OP_HASH256',
         opcode: 170,
         hex: '0xaa',
         input: 'in',
@@ -849,7 +849,7 @@ export const OPCODES = [
         category: 'crypto'
     },
     {
-        name: 'OP_CODESEPARATOR',
+        label: 'OP_CODESEPARATOR',
         opcode: 171,
         hex: '0xab',
         input: 'Nothing',
@@ -858,7 +858,7 @@ export const OPCODES = [
         category: 'crypto'
     },
     {
-        name: 'OP_CHECKSIG',
+        label: 'OP_CHECKSIG',
         opcode: 172,
         hex: '0xac',
         input: 'sig pubkey',
@@ -867,7 +867,7 @@ export const OPCODES = [
         category: 'crypto'
     },
     {
-        name: 'OP_CHECKSIGVERIFY',
+        label: 'OP_CHECKSIGVERIFY',
         opcode: 173,
         hex: '0xad',
         input: 'sig pubkey',
@@ -876,7 +876,7 @@ export const OPCODES = [
         category: 'crypto'
     },
     {
-        name: 'OP_CHECKMULTISIG',
+        label: 'OP_CHECKMULTISIG',
         opcode: 174,
         hex: '0xae',
         input: 'x sig1 sig2 ... <number of signatures> pub1 pub2 <number of public keys>',
@@ -885,7 +885,7 @@ export const OPCODES = [
         category: 'crypto'
     },
     {
-        name: 'OP_CHECKMULTISIGVERIFY',
+        label: 'OP_CHECKMULTISIGVERIFY',
         opcode: 175,
         hex: '0xaf',
         input: 'x sig1 sig2 ... <number of signatures> pub1 pub2 ... <number of public keys>',
@@ -894,7 +894,7 @@ export const OPCODES = [
         category: 'crypto'
     },
     {
-        name: 'OP_CHECKSIGADD',
+        label: 'OP_CHECKSIGADD',
         opcode: 186,
         hex: '0xba',
         input: 'sig n pub',
@@ -905,7 +905,7 @@ export const OPCODES = [
 
     // locktime
     {
-        name: 'OP_CHECKLOCKTIMEVERIFY',
+        label: 'OP_CHECKLOCKTIMEVERIFY',
         opcode: 177,
         hex: '0xb1',
         input: 'x',
@@ -914,7 +914,7 @@ export const OPCODES = [
         category: 'locktime'
     },
     {
-        name: 'OP_CHECKSEQUENCEVERIFY',
+        label: 'OP_CHECKSEQUENCEVERIFY',
         opcode: 178,
         hex: '0xb2',
         input: 'x',
@@ -925,7 +925,7 @@ export const OPCODES = [
 ];
 
 export function nameToOpcode(nameToFind) {
-    let opcode = OPCODES.find(op => op.name === nameToFind);
+    let opcode = OPCODES.find(op => op.label === nameToFind);
     if (opcode) 
         return opcode;
     else

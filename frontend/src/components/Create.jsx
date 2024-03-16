@@ -2,13 +2,15 @@ import * as React from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import { OPCODES, nameToOpcode } from './Opcodes';
-import { Autocomplete, Box, Button, FormControlLabel, IconButton, ListItemButton, ListItemIcon, ListItemText, Stack, Switch, TextField, } from '@mui/material';
+import { Autocomplete, Box, Button, ButtonGroup, FormControlLabel, IconButton, ListItemButton, ListItemIcon, ListItemText, Stack, Switch, TextField, } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import LooksOne from '@mui/icons-material/LooksOne';
 import LooksTwo from '@mui/icons-material/LooksTwo';
 
 
-function OpcodeList({showDisabled, scriptOpcodes1, setScriptOpcodes1, scriptOpcodes2, setScriptOpcodes2}) {
+function OpcodeList({showDisabled, scriptOpcodes1, setScriptOpcodes1, scriptOpcodes2, setScriptOpcodes2}) {    
+    const [selectedOpcode, setSelectedOpcode] = React.useState(null);
+
     // use either all opcodes, or only opcodes that are not disabled 
     let opcodes = showDisabled ? OPCODES : OPCODES.filter(op => !op.disabled); 
     
@@ -22,42 +24,54 @@ function OpcodeList({showDisabled, scriptOpcodes1, setScriptOpcodes1, scriptOpco
         setScriptOpcodes2(newScriptOpcodes);
     };
 
+    const toggleDisabledDisplay = () => {
+        setShowDisabled((prevShowDisabled) => !prevShowDisabled);
+    };
+
     return (
         <Box width='33%'>
             <h2>Opcodes</h2>
+            
+            <FormControlLabel 
+                control={<Switch defaultChecked onChange={toggleDisabledDisplay}/>} 
+                label="Show disabled Opcodes"
+            />
 
             <Autocomplete 
                 disablePortal
                 id='opcode-autocomplete'
-                options={opcodes.map(op => ({...op, label: op.name}))}
+                options={opcodes}
                 sx={{width: 350}}
                 renderInput={(params) => <TextField {...params} label="Search Opcode" />}
+                onChange={(event, value) => setSelectedOpcode(value)}
             />
-            <Stack direction='row'>
+            <ButtonGroup>
                 <Button
                     sx={{width: 175}}
                     fullWidth
                     variant='contained' 
-                    onClick={() => console.log("adding to first")}    
+                    onClick={() => addToScript1(selectedOpcode)}
+                    disabled={selectedOpcode === null}  
                 >
                     First
                 </Button>
                 <Button 
                     sx={{width: 175}}
                     variant='contained'
-                    onClick={() => console.log("adding to second")}
+                    onClick={() => addToScript2(selectedOpcode)}
+                    disabled={selectedOpcode === null}  
                 >
                     Second
                 </Button>
-            </Stack>
+            </ButtonGroup>
             <List>
                 {opcodes.map(op => (
                     <ListItem 
-                        key={`${op.name}`} 
+                        key={`${op.label}`} 
                         style={{backgroundColor: op.disabled && '#ef5350'}}
                         disablePadding
                     >
-                        <ListItemText primary={`${op.name}`} secondary={`${op.hex}`}/>
+                        <ListItemText primary={`${op.label}`} secondary={`${op.hex}`}/>
                         <ListItemIcon>
                             <IconButton onClick={() => addToScript1(op)}>
                                 <LooksOne />
@@ -98,7 +112,7 @@ function ScriptList({title, scriptOpcodes, setScriptOpcodes}) {
                             }
                             disablePadding 
                         >
-                            <ListItemText primary={`${op.name}`} secondary={`${op.hex}`}/>
+                            <ListItemText primary={`${op.label}`} secondary={`${op.hex}`}/>
                         </ListItem>
                     ))}
                 </List>
@@ -114,23 +128,18 @@ export default function Create() {
     const [scriptOpcodes1, setScriptOpcodes1] = React.useState([]);
     const [scriptOpcodes2, setScriptOpcodes2] = React.useState([]);
 
-    const toggleDisabledDisplay = () => {
-        setShowDisabled((prevShowDisabled) => !prevShowDisabled);
-    };
 
     return (
         <>
             <h1 id='create' style={{paddingTop:'45px'}}>Create</h1>
 
-            <FormControlLabel 
-                control={<Switch defaultChecked onChange={toggleDisabledDisplay}/>} 
-                label="Show disabled Opcodes"
-            />
+
             <Stack direction='row' alignItems='flex-start' justifyContent='center'>
                 <ScriptList title={"scriptPubKey"} scriptOpcodes={scriptOpcodes1} setScriptOpcodes={setScriptOpcodes1}/>
                 <ScriptList title={"scriptSig"} scriptOpcodes={scriptOpcodes2} setScriptOpcodes={setScriptOpcodes2}/>
                 <OpcodeList 
-                    showDisabled={showDisabled} 
+                    showDisabled={showDisabled}
+                    setShowDisabled={setShowDisabled}
                     scriptOpcodes1={scriptOpcodes1} 
                     setScriptOpcodes1={setScriptOpcodes1}
                     scriptOpcodes2={scriptOpcodes2} 

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import { OPCODES, nameToOpcode } from './Opcodes';
-import { Autocomplete, Box, Button, ButtonGroup, FormControlLabel, IconButton, ListItemButton, ListItemIcon, ListItemText, Stack, Switch, TextField, } from '@mui/material';
+import { OPCODES, P2MS, P2PK, P2PKH, RETURN } from './Opcodes';
+import { Autocomplete, Box, Button, ButtonGroup, FormControl, FormControlLabel, IconButton, InputLabel, ListItemButton, ListItemIcon, ListItemText, ListSubheader, MenuItem, Select, Stack, Switch, TextField, } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import LooksOne from '@mui/icons-material/LooksOne';
 import LooksTwo from '@mui/icons-material/LooksTwo';
@@ -128,13 +128,65 @@ export default function Create() {
     const [scriptOpcodes1, setScriptOpcodes1] = React.useState([]);
     const [scriptOpcodes2, setScriptOpcodes2] = React.useState([]);
 
+    const chooseScriptType = (e) => {
+        e.preventDefault();
+        let scriptType = e.target.value;
+
+        let scriptPubkey;
+        let scriptSig;
+        
+        switch (scriptType) {
+            case "P2PK":
+                [scriptPubkey, scriptSig] = P2PK("<SIGNATURE>", "<PUBKEY>");
+                break;
+            case "P2PKH":
+                [scriptPubkey, scriptSig] = P2PKH("<SIGNATURE>", "<PUBKEY>");
+                break;
+            case "P2MS":
+                [scriptPubkey, scriptSig] = P2MS(
+                    ["<SIGNATURE1>", "<SIGNATURE3>"],
+                    ["<PUBKEY1>", "<PUBKEY2>", "<PUBKEY3>"],
+                    2);
+                break;
+            case "P2SH":
+                [scriptPubkey, scriptSig] = P2SH([],[]);
+                break;
+            case "RETURN":
+                [scriptPubkey, scriptSig] = RETURN("<DATA>");
+                break; 
+            case "1S":
+            case "2S":
+            default:
+                scriptPubkey = [];
+                scriptSig = [];
+                break;
+        }
+        setScriptOpcodes1(scriptPubkey);
+        setScriptOpcodes2(scriptSig);
+    };
 
     return (
         <>
             <h1 id='create' style={{paddingTop:'45px'}}>Create</h1>
 
+            <FormControl sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel htmlFor="script-select">Script Type</InputLabel>
+                <Select defaultValue="2S" id="script-select" label="Script Type" onChange={chooseScriptType}>
+                    <ListSubheader>Standard Scripts</ListSubheader>
+                    <MenuItem value="P2PK">Pay to PubKey (P2PK)</MenuItem>
+                    <MenuItem value="P2PKH">Pay to Pubkey Hash (P2PKH)</MenuItem>
+                    <MenuItem value="P2MS">Multisig (P2MS)</MenuItem>
+                    <MenuItem value="P2SH">Pay to Script Hash (P2SH)</MenuItem>
+
+                    <ListSubheader>Non-standard Scripts</ListSubheader>
+                    <MenuItem value="2S">Double Script</MenuItem>
+                    <MenuItem value="1S">Single Script</MenuItem>
+                </Select>
+            </FormControl>
 
             <Stack direction='row' alignItems='flex-start' justifyContent='center'>
+                
+                
                 <ScriptList title={"scriptPubKey"} scriptOpcodes={scriptOpcodes1} setScriptOpcodes={setScriptOpcodes1}/>
                 <ScriptList title={"scriptSig"} scriptOpcodes={scriptOpcodes2} setScriptOpcodes={setScriptOpcodes2}/>
                 <OpcodeList 

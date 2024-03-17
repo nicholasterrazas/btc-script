@@ -924,10 +924,85 @@ export const OPCODES = [
     }
 ];
 
-export function nameToOpcode(nameToFind) {
+export function opcode(nameToFind) {
     let opcode = OPCODES.find(op => op.label === nameToFind);
     if (opcode) 
         return opcode;
     else
         return null;
-} 
+}
+
+export function value(string) {
+    return {
+        label: string,
+        hex: string,
+        description: 'value',
+        category: 'value'
+    };
+}
+
+
+export function P2PK(signature, pubkey) {
+    let scriptPubkey = [
+        value(pubkey),
+        opcode("OP_CHECKSIG")
+    ];
+
+    let scriptSig = [
+        value(signature)
+    ];
+
+    return [scriptPubkey, scriptSig];
+}
+
+export function P2PKH(signature, pubkey) {
+    let scriptPubkey = [
+        opcode("OP_DUP"),
+        opcode("OP_HASH160"),
+        value(`hash(${pubkey})`),
+        opcode("OP_EQUALVERIFY"),
+        opcode("OP_CHECKSIG")
+    ];
+
+    let scriptSig = [
+        value(pubkey),
+        value(signature)
+    ];
+
+    return [scriptPubkey, scriptSig];
+}
+
+export function P2MS(signatures, pubkeys, numRequired) {
+    let hashedPubkeys = pubkeys.map(pk => value(`hash(${pk})`));
+    
+    let scriptPubkey = [
+        opcode(`OP_${numRequired}`),
+        ...hashedPubkeys,
+        opcode(`OP_${pubkeys.length}`)   
+    ];
+
+    let scriptSig = [
+        opcode("OP_0"),
+        ...signatures.map(sig => value(`${sig}`))
+    ];
+
+    return [scriptPubkey, scriptSig];
+}
+
+export function P2SH(signatures, redeemScript) {
+    let scriptPubKey = [];
+    let scriptSig = [];
+    
+    return [scriptPubkey, scriptSig];
+}
+
+export function RETURN(data) {
+    let scriptPubKey = [
+        opcode("OP_PUSHDATA4"),
+        value(`${data}`)
+    ];
+    let scriptSig = [];
+
+    return [scriptPubkey, scriptSig];
+}
+

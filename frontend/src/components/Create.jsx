@@ -181,8 +181,8 @@ function ScriptList({showPrefix, showHex, title, scriptOpcodes, setScriptOpcodes
 
     return (
         <Box width='33%'>
-            {(scriptOpcodes.length > 0) ? <>
-                <h2>{title || "Script"}</h2> 
+            <h2>{title || "Script"}</h2> 
+            {(scriptOpcodes.length > 0) &&
                 <List>
                     {scriptOpcodes.map((op, idx) => (
                         <ListItem 
@@ -199,10 +199,7 @@ function ScriptList({showPrefix, showHex, title, scriptOpcodes, setScriptOpcodes
                                 secondary={showHex && `${op.hex}`}/>
                         </ListItem>
                     ))}
-                </List>
-            </> : <>
-                <h2>{title || "Script"} (empty)</h2>        
-            </>}
+                </List>}
         </Box>
     );
 }
@@ -282,7 +279,7 @@ export default function Create() {
                     showPrefix={showPrefix}
                     showHex={showHex}
 
-                    title={"scriptPubKey"} 
+                    title={"scriptPubkey"} 
                     scriptOpcodes={scriptOpcodes1} 
                     setScriptOpcodes={setScriptOpcodes1}
                 />

@@ -8,7 +8,44 @@ import LooksOne from '@mui/icons-material/LooksOne';
 import LooksTwo from '@mui/icons-material/LooksTwo';
 
 
-function OpcodeList({showDisabled, scriptOpcodes1, setScriptOpcodes1, scriptOpcodes2, setScriptOpcodes2}) {    
+function Settings({setShowDisabled, setShowPrefix, setShowHex}) {
+    
+    const toggleDisabledDisplay = () => {
+        setShowDisabled((prevShowDisabled) => !prevShowDisabled);
+    };
+
+    const togglePrefixDisplay = () => {
+        setShowPrefix((prevShowPrefix) => !prevShowPrefix);
+    };
+
+    const toggleHexDisplay = () => {
+        setShowHex((prevShowHex) => !prevShowHex);
+    };
+
+    return (
+        <>
+            <h3>Settings</h3>
+
+            <FormControlLabel 
+                control={<Switch defaultChecked onChange={toggleDisabledDisplay}/>} 
+                label="Show disabled opcodes"
+            />
+
+            <FormControlLabel 
+                control={<Switch defaultChecked onChange={togglePrefixDisplay}/>} 
+                label="Show 'OP' prefix in script"
+            />
+            <FormControlLabel 
+                control={<Switch defaultChecked onChange={toggleHexDisplay}/>} 
+                label="Show hex equivalent"
+            />
+
+        </>
+    )
+
+}
+
+function OpcodeList({showDisabled, showHex, scriptOpcodes1, setScriptOpcodes1, scriptOpcodes2, setScriptOpcodes2}) {    
     const [selectedOpcode, setSelectedOpcode] = React.useState(null);
 
     // use either all opcodes, or only opcodes that are not disabled 
@@ -24,19 +61,10 @@ function OpcodeList({showDisabled, scriptOpcodes1, setScriptOpcodes1, scriptOpco
         setScriptOpcodes2(newScriptOpcodes);
     };
 
-    const toggleDisabledDisplay = () => {
-        setShowDisabled((prevShowDisabled) => !prevShowDisabled);
-    };
-
     return (
         <Box width='33%'>
             <h2>Opcodes</h2>
             
-            <FormControlLabel 
-                control={<Switch defaultChecked onChange={toggleDisabledDisplay}/>} 
-                label="Show disabled Opcodes"
-            />
-
             <Autocomplete 
                 disablePortal
                 id='opcode-autocomplete'
@@ -71,7 +99,7 @@ function OpcodeList({showDisabled, scriptOpcodes1, setScriptOpcodes1, scriptOpco
                         style={{backgroundColor: op.disabled && '#ef5350'}}
                         disablePadding
                     >
-                        <ListItemText primary={`${op.label}`} secondary={`${op.hex}`}/>
+                        <ListItemText primary={`${op.label}`} secondary={showHex && `${op.hex}`} />
                         <ListItemIcon>
                             <IconButton onClick={() => addToScript1(op)}>
                                 <LooksOne />
@@ -89,7 +117,7 @@ function OpcodeList({showDisabled, scriptOpcodes1, setScriptOpcodes1, scriptOpco
     );
 }
 
-function ScriptList({title, scriptOpcodes, setScriptOpcodes}) {
+function ScriptList({showPrefix, showHex, title, scriptOpcodes, setScriptOpcodes}) {
     console.log(scriptOpcodes);
 
     const removeFromScript = (indexToRemove) => {
@@ -112,7 +140,9 @@ function ScriptList({title, scriptOpcodes, setScriptOpcodes}) {
                             }
                             disablePadding 
                         >
-                            <ListItemText primary={`${op.label}`} secondary={`${op.hex}`}/>
+                            <ListItemText 
+                                primary={showPrefix ? `${op.label}` : `${op.label.slice(3)}`} 
+                                secondary={showHex && `${op.hex}`}/>
                         </ListItem>
                     ))}
                 </List>
@@ -125,6 +155,9 @@ function ScriptList({title, scriptOpcodes, setScriptOpcodes}) {
 
 export default function Create() {
     const [showDisabled, setShowDisabled] = React.useState(true);
+    const [showPrefix, setShowPrefix] = React.useState(true);
+    const [showHex, setShowHex] = React.useState(true);
+
     const [scriptOpcodes1, setScriptOpcodes1] = React.useState([]);
     const [scriptOpcodes2, setScriptOpcodes2] = React.useState([]);
 
@@ -184,14 +217,34 @@ export default function Create() {
                 </Select>
             </FormControl>
 
+            <Settings 
+                setShowDisabled={setShowDisabled}
+                setShowPrefix={setShowPrefix}
+                setShowHex={setShowHex}
+            />
+
             <Stack direction='row' alignItems='flex-start' justifyContent='center'>
-                
-                
-                <ScriptList title={"scriptPubKey"} scriptOpcodes={scriptOpcodes1} setScriptOpcodes={setScriptOpcodes1}/>
-                <ScriptList title={"scriptSig"} scriptOpcodes={scriptOpcodes2} setScriptOpcodes={setScriptOpcodes2}/>
+                <ScriptList
+                    showPrefix={showPrefix}
+                    showHex={showHex}
+
+                    title={"scriptPubKey"} 
+                    scriptOpcodes={scriptOpcodes1} 
+                    setScriptOpcodes={setScriptOpcodes1}
+                />
+                <ScriptList 
+                    showPrefix={showPrefix}
+                    showHex={showHex}
+
+                    title={"scriptSig"} 
+                    scriptOpcodes={scriptOpcodes2} 
+                    setScriptOpcodes={setScriptOpcodes2}
+                />
                 <OpcodeList 
                     showDisabled={showDisabled}
-                    setShowDisabled={setShowDisabled}
+                    showPrefix={showPrefix}
+                    showHex={showHex}
+
                     scriptOpcodes1={scriptOpcodes1} 
                     setScriptOpcodes1={setScriptOpcodes1}
                     scriptOpcodes2={scriptOpcodes2} 

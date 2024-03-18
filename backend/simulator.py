@@ -1,23 +1,66 @@
-import docker
+from opcodes import *
+from pydantic import BaseModel
 
 
-client = docker.from_env()
-container = client.containers.run(image='btcdeb', detach=True, command='/bin/sh', tty=True)
+class SimulationStep(BaseModel):
+    script: list[str]
+    stack: list[str]
+    message: str | None = None
+    passed: bool = True
+
+class Simulation(BaseModel):
+    steps: list[SimulationStep]
+    valid: bool
 
 
 
-def simulate_script(script: str):
-    print(f"\nCommand: btcdeb '[{script}]'\n")
+def check_valid(data: str):
+    match data:
+        case "OP_FALSE":    return False
+        case "OP_0":        return False
+        case _:             return True
 
-    exit_code, output = container.exec_run(tty=True, cmd=f"btcdeb '[{script}]'")    # start btcdeb
 
-    for line in output:
-        print(line.decode('utf-8'))
-    print()
-    print(f'{exit_code=}')
+def simulate_step(script: list[str], stack: list[str]) -> SimulationStep:
+    data = script.pop(0)
+    stack.insert(0, data)
+    message = f"<{data}> pushed to stack"
+    passed = True
+
+    step = SimulationStep(script=script, stack=stack, message=message, passed=passed)
+    return step
+
+
+def simulate_script(script: list[str]) -> Simulation:
+    stack = []
+    steps = [SimulationStep(script=script, stack=stack, message="Initial setup")]
+
+    # simulate script execution, step by step
+    while script:
+        step = simulate_step(script, stack)
+        steps.append(step)
+        
+        if not step.passed: 
+            break
+        
+    # verify if script is valid at the end of executing it
+    match len(stack):
+        case 1: valid_script = check_valid(stack[0])
+        case _: valid_script = False
+
+    return Simulation(steps=steps, valid=valid_script)
 
 
 
 if __name__ == "__main__":
-    script = input("Enter Script: ")
-    simulate_script(script)
+    script_input = input("Enter Script: ").split()
+
+    simulation = simulate_script(script_input)
+    for i, step in enumerate(simulation.steps):
+        print(f"Step {i}: {step.message}")
+        print(f"Script: {step.script}")
+        print(f"Stack: {step.stack}")
+        print()
+    
+    validity = "Valid" if simulation.valid else "Invalid"
+    print(f"{validity} script")

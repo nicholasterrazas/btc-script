@@ -14,12 +14,6 @@ class Simulation(BaseModel):
 
 
 
-def check_valid(data: str):
-    match data:
-        case "OP_FALSE":    return False
-        case "OP_0":        return False
-        case _:             return True
-
 
 def simulate_step(script: list[str], stack: list[str]) -> SimulationStep:
     data = script.pop(0)
@@ -45,7 +39,7 @@ def simulate_script(script: list[str]) -> Simulation:
         
     # verify if script is valid at the end of executing it
     match len(stack):
-        case 1: valid_script = check_valid(stack[0])
+        case 1: valid_script = (stack[0] != OP_0)
         case _: valid_script = False
 
     return Simulation(steps=steps, valid=valid_script)

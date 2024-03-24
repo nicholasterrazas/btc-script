@@ -14,12 +14,39 @@ class Simulation(BaseModel):
 
 
 
-def simulate_step(script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
-    data = script.pop(0)
+def enough_args(arg_count: int, stack: list[ScriptOp]) -> bool: 
+    return arg_count <= len(stack)
+
+
+def push_data(data: Data, stack: list[ScriptOp]) -> SimulationStep:
     stack.insert(0, data)
     message = f"<{data}> pushed to stack"
+    
+    return SimulationStep(script=script, stack=stack, message=message)
 
-    step = SimulationStep(script=script, stack=stack, message=message)
+
+def process_opcode(opcode: Opcode, stack: list[ScriptOp]) -> SimulationStep:
+    if not enough_args(opcode.arg_count, stack):
+        message = f"{opcode.label} requires {opcode.arg_count} args but was given {len(stack)}"
+        return SimulationStep(script, stack, message, failed=True)
+
+    # TODO: implement logic for each opcode
+    stack.insert(0, opcode)
+    message = f"Logic for {opcode.label} not implemented yet.\n{opcode.label} pushed to stack"
+    return SimulationStep(script, stack, message)
+
+
+def simulate_step(script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
+    script_op = script.pop(0)
+
+    if type(script_op) == Data:
+        step = push_data(script_op, stack)
+    elif type(script_op) == Opcode:
+        step = process_opcode(script_op, stack)
+    else:
+        print(type(script_op))
+        step = SimulationStep(script, stack, message="TYPE ERROR", failed=True)
+
     return step
 
 

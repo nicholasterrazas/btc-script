@@ -3,8 +3,8 @@ from pydantic import BaseModel
 
 
 class SimulationStep(BaseModel):
-    script: list[str]
-    stack: list[str]
+    script: list[ScriptOp]
+    stack: list[ScriptOp]
     message: str | None = None
     passed: bool = True
 
@@ -15,7 +15,7 @@ class Simulation(BaseModel):
 
 
 
-def simulate_step(script: list[str], stack: list[str]) -> SimulationStep:
+def simulate_step(script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
     data = script.pop(0)
     stack.insert(0, data)
     message = f"<{data}> pushed to stack"
@@ -25,7 +25,7 @@ def simulate_step(script: list[str], stack: list[str]) -> SimulationStep:
     return step
 
 
-def simulate_script(script: list[str]) -> Simulation:
+def simulate_script(script: list[ScriptOp]) -> Simulation:
     stack = []
     steps = [SimulationStep(script=script, stack=stack, message="Initial setup")]
 
@@ -38,9 +38,9 @@ def simulate_script(script: list[str]) -> Simulation:
             break
         
     # verify if script is valid at the end of executing it
-    match len(stack):
-        case 1: valid_script = (stack[0] != OP_0)
-        case _: valid_script = False
+    match stack:
+        case ["OP_ZERO"] | [0]: valid_script = False
+        case _:                 valid_script = True
 
     return Simulation(steps=steps, valid=valid_script)
 

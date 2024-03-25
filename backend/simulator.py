@@ -27,35 +27,80 @@ def push_data(data: Data, stack: list[ScriptOp]) -> SimulationStep:
 
 def unary_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
     operand = stack.pop(0)
-    
+
+    operation = opcode.label[3:]
+    msg = f"Performed {operation} on <{operand}>"
+
     if opcode == OP_1ADD:
         result = operand + 1
-        msg = f"Added 1 to <{operand}>\nPushing <{result}>"
     elif opcode == OP_1SUB:
         result = operand - 1
-        msg = f"Subtracted 1 from <{operand}>\nPushing <{result}>"
     elif opcode == OP_NEGATE:
         result = -operand
-        msg = f"Negated <{operand}>\nPushing <{result}>"
     elif opcode == OP_ABS:
         result = -operand if operand < 0 else operand
-        msg = f"Took absolute value of <{operand}>\nPushing <{result}>"
     elif opcode == OP_NOT:
         result = int(operand==0)
-        msg = f"Performed boolean 'NOT' on <{operand}>\nPushing <{result}>"
     elif opcode == OP_0NOTEQUAL:
         result = int(opcode!=0)
-        msg = f"Performed '0NOTEQUAL' on <{operand}>\nPushing <{result}>"
     else:
         msg = f"UNARY OPERATION ERROR: (OPCODE: {opcode}, OPERAND: {operand})"
         return SimulationStep(script, stack, message=msg, failed=True)
     
     stack.insert(0, result)
+    msg += f"\nPushed <{result}> to stack"
+    
     return SimulationStep(script, stack, msg)
 
 
 def binary_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
-    ...
+    op1 = stack.pop(0)
+    op2 = stack.pop(0)
+    
+    operation = opcode.label[3:]
+    msg =f"Performed {operation} on <{op1}> and <{op2}>" 
+
+    if opcode == OP_ADD:
+        result = op1 + op2
+    elif opcode == OP_SUB:
+        result = op1 - op2
+    elif opcode == OP_BOOLAND:
+        # If both op1 and op2 are not 0, the output is 1. Otherwise 0.
+        result == int(op1 != 0 and op2 != 0)
+    elif opcode == OP_BOOLOR:
+        # If op1 or op2 is not 0, the output is 1. Otherwise 0.
+        result == int(op1 != 0 or op2 != 0)
+    elif opcode == OP_NUMEQUAL:
+        result == int(op1 == op2)
+    elif opcode == OP_NUMEQUALVERIFY:
+        result == int(op1 == op2)
+        if result == 1:
+            msg += "Verify passed\n"
+        else:
+            msg += "Verify failed"
+            return SimulationStep(script, stack, msg, failed=True)
+    elif opcode == OP_NUMNOTEQUAL:
+        result == int(op1 != op2)
+    elif opcode == OP_LESSTHAN:
+        result == int(op1 < op2)
+    elif opcode == OP_GREATERTHAN:
+        result == int(op1 > op2)
+    elif opcode == OP_LESSTHANOREQUAL:
+        result == int(op1 <= op2)
+    elif opcode == OP_GREATERTHANOREQUAL:
+        result == int(op1 >= op2)
+    elif opcode == OP_MIN:
+        result = min(op1, op2)
+    elif opcode == OP_MAX:
+        result = max(op1, op2)
+    else:
+        msg = f"UNARY OPERATION ERROR: (OPCODE: {opcode}, OPERAND1: {op1}, OPERAND2: {op2})"
+        return SimulationStep(script, stack, message=msg, failed=True)
+    
+    stack.insert(0, result)
+    msg += f"\nPushed <{result}> to stack"
+
+    return SimulationStep(script, stack, msg)
 
 
 def process_opcode(opcode: Opcode, stack: list[ScriptOp]) -> SimulationStep:

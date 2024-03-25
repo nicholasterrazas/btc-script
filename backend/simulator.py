@@ -58,7 +58,7 @@ def binary_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptO
     op2 = stack.pop(0)
     
     operation = opcode.label[3:]
-    msg =f"Performed {operation} on <{op1}> and <{op2}>" 
+    msg = f"Performed {operation} on <{op1}> and <{op2}>" 
 
     if opcode == OP_ADD:
         result = op1 + op2
@@ -94,11 +94,65 @@ def binary_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptO
     elif opcode == OP_MAX:
         result = max(op1, op2)
     else:
-        msg = f"UNARY OPERATION ERROR: (OPCODE: {opcode}, OPERAND1: {op1}, OPERAND2: {op2})"
+        msg = f"BINARY OPERATION ERROR: (OPCODE: {opcode}, OPERAND1: {op1}, OPERAND2: {op2})"
         return SimulationStep(script, stack, message=msg, failed=True)
     
     stack.insert(0, result)
     msg += f"\nPushed <{result}> to stack"
+
+    return SimulationStep(script, stack, msg)
+
+
+# swaps elements at idx1 and idx2 of stack, and then returns them
+def swap(idx1: int, idx2: int, stack: list[ScriptOp]) -> tuple[ScriptOp,ScriptOp]:
+    temp = stack[idx1]
+    stack[idx1] = stack[idx2]
+    stack[idx2] = temp
+
+    return stack[idx1], temp 
+
+
+def stack_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
+    operation = opcode.label[3:]
+    msg = f"Performed {operation}\n" 
+    
+    if opcode == OP_2DROP:
+        first = stack.pop(0)
+        second = stack.pop(0)        
+        msg += f"Popped <{first}> and <{second}> from stack"
+    elif opcode == OP_2DUP:
+        first  = stack[0]
+        second = stack[1]
+        stack.insert(0, second)
+        stack.insert(0, first)
+        msg += f"Duplicated <{first}> and <{second}> and pushed them to stack"
+    elif opcode == OP_2OVER:
+        third  = stack[2]
+        fourth = stack[3]
+        stack.insert(0, third)
+        stack.insert(0, fourth)
+        msg += f"Duplicated <{third}> and <{fourth}> and pushed them to stack"
+    elif opcode == OP_2ROT:
+        fifth = stack[4]
+        sixth = stack[5]
+        stack.insert(0, fifth)
+        stack.insert(0, sixth)
+        msg += f"Duplicated <{fifth}> and <{sixth}> and pushed them to stack"
+    elif opcode == OP_2SWAP:
+        first, third = swap(0, 2, stack)    # swap 1st and 3rd values
+        second, fourth = swap(1, 3, stack)  # swap 2nd and 4th values
+        msg += f"Swapped <{first}> and <{second}> with <{third}> and <{fourth}>"
+    elif opcode == OP_3DUP:
+        first  = stack[0]
+        second = stack[1]
+        third  = stack[2]
+        stack.insert(0, third)
+        stack.insert(0, second)
+        stack.insert(0, first)
+        msg += f"Duplicated <{first}>, <{second}>, and <{third}>, and pushed them to stack"
+    else:
+        msg = f"STACK OPERATION ERROR: (OPCODE: {opcode})"
+        return SimulationStep(script, stack, message=msg, failed=True)
 
     return SimulationStep(script, stack, msg)
 
@@ -113,15 +167,19 @@ def process_opcode(opcode: Opcode, stack: list[ScriptOp]) -> SimulationStep:
         return SimulationStep(script, stack, message, failed=True)
 
 
-    if opcode.arg_count == 1:
-        return unary_operation(opcode, stack)
-    elif opcode.arg_count == 2:
-        return binary_operation(opcode, stack)
+    if opcode in UNARY_OPS:     
+        return unary_operation(opcode, script, stack)
+    elif opcode in BINARY_OPS:
+        return binary_operation(opcode, script, stack)
+    elif opcode in STACK_OPS:   
+        return stack_operation(opcode, script, stack)
 
-    # TODO: implement logic for each opcode
-    stack.insert(0, opcode)
-    message = f"Logic for {opcode.label} not implemented yet.\n{opcode.label} pushed to stack"
-    return SimulationStep(script, stack, message)
+    else:
+        # TODO: implement logic for each opcode
+        stack.insert(0, opcode)
+        msg = f"Logic for {opcode.label} not implemented yet.\n{opcode.label} pushed to stack"
+
+    return SimulationStep(script, stack, msg)
 
 
 def simulate_step(script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:

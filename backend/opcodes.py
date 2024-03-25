@@ -50,12 +50,12 @@ OP_RETURN       = Opcode(label='OP_RETURN', category='flow control')
 # Stack
 OP_TOALTSTACK   = Opcode(label='OP_TOALTSTACK', category='stack')
 OP_FROMALTSTACK = Opcode(label='OP_FROMALTSTACK', category='stack')
-OP_2DROP        = Opcode(label='OP_2DROP', category='stack')
-OP_2DUP         = Opcode(label='OP_2DUP', category='stack')
-OP_3DUP         = Opcode(label='OP_3DUP', category='stack')
-OP_2OVER        = Opcode(label='OP_2OVER', category='stack')
-OP_2ROT         = Opcode(label='OP_2ROT', category='stack')
-OP_2SWAP        = Opcode(label='OP_2SWAP', category='stack')
+OP_2DROP        = Opcode(label='OP_2DROP', category='stack', arg_count=2)
+OP_2DUP         = Opcode(label='OP_2DUP', category='stack', arg_count=2)
+OP_3DUP         = Opcode(label='OP_3DUP', category='stack', arg_count=3)
+OP_2OVER        = Opcode(label='OP_2OVER', category='stack', arg_count=4)
+OP_2ROT         = Opcode(label='OP_2ROT', category='stack', arg_count=6)
+OP_2SWAP        = Opcode(label='OP_2SWAP', category='stack', arg_count=4)
 OP_IFDUP        = Opcode(label='OP_IFDUP', category='stack')
 OP_DEPTH        = Opcode(label='OP_DEPTH', category='stack')
 OP_DROP         = Opcode(label='OP_DROP', category='stack')
@@ -244,6 +244,42 @@ OPCODES = {
     "OP_CHECKSEQUENCEVERIFY": OP_CHECKSEQUENCEVERIFY,
 }
 
+# Opcodes that take ONE value as input, and returns one value as output
+UNARY_OPS = [
+    OP_1ADD,
+    OP_1SUB,
+    OP_NEGATE,
+    OP_ABS,
+    OP_NOT,
+    OP_0NOTEQUAL,
+]
+
+# Opcodes that take TWO values as inputs, and returns ONE value as output
+BINARY_OPS = [
+    OP_ADD,
+    OP_SUB,
+    OP_BOOLAND,
+    OP_BOOLOR,
+    OP_NUMEQUAL,
+    OP_NUMEQUALVERIFY,
+    OP_NUMNOTEQUAL,
+    OP_LESSTHAN,
+    OP_GREATERTHAN,
+    OP_LESSTHANOREQUAL,
+    OP_GREATERTHANOREQUAL,
+    OP_MIN,
+    OP_MAX,
+]
+
+# Opcodes that modify the stack
+STACK_OPS = [
+    OP_2DROP,
+    OP_2DUP,
+    OP_2OVER,
+    OP_2ROT,
+    OP_2SWAP,
+    OP_3DUP,
+]
 
 def str_to_op(s: str):
     if OPCODES.get(s) != None:

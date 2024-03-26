@@ -304,5 +304,5 @@ def str_to_op(s: str):
     return Data(value=val)
 
 
-def parse_script(script: list[str]) -> list[ScriptOp]:
-    return list(map(str_to_op, script))
+def construct_script(script: str) -> list[ScriptOp]:
+    return [str_to_op(op) for op in script.split()]

@@ -229,8 +229,8 @@ def simulate_script(script: list[ScriptOp]) -> Simulation:
 
 
 if __name__ == "__main__":
-    script_input = input("Enter Script: ").split()
-    script = parse_script(script_input)
+    script_input = input("Enter Script: ")
+    script = construct_script(script_input)
 
     simulation = simulate_script(script)
     for i, step in enumerate(simulation.steps):

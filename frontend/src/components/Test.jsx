@@ -82,8 +82,7 @@ function Evaluate() {
     );
 }
 
-function LinearStepper() {
-    const [activeStep, setActiveStep] = React.useState(0);
+function LinearStepper({activeStep, setActiveStep}) {
     const [skipped, setSkipped] = React.useState(new Set());
 
     const isStepOptional = (step) => {
@@ -190,13 +189,29 @@ function LinearStepper() {
 
 
 export default function Test() {
+    const [activeStep, setActiveStep] = React.useState(0);
+
+    let screen;
+    if (activeStep === 0) {
+        console.log('Selecting Script');
+        screen = <Select />
+    } else if (activeStep === 1) {
+        console.log('Simulating Script');
+        screen = <Simulate />
+    } else if (activeStep === 2) {
+        console.log('Evaluating Script');
+        screen = <Evaluate />
+    } else {
+        console.error('Step out of range: ' + activeStep);
+        screen = null;
+    }
 
     return (
         <>
             <h1 id='test' style={{ paddingTop: '45px' }}>Test</h1>
             <Stack alignItems='center' spacing={3}>
-                <LinearStepper />
-                <Select />
+                <LinearStepper activeStep={activeStep} setActiveStep={setActiveStep}/>
+                {screen}
             </Stack>
         </>
     );

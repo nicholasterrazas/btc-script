@@ -18,7 +18,7 @@ def enough_args(arg_count: int, stack: list[ScriptOp]) -> bool:
     return arg_count <= len(stack)
 
 
-def push_data(data: Data, stack: list[ScriptOp]) -> SimulationStep:
+def push_data(data: Data, script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
     stack.insert(0, data)
     message = f"Pushed <{data.value}> to stack"
     
@@ -158,7 +158,7 @@ def stack_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp
     return SimulationStep(script=script, stack=stack, message=msg)
 
 
-def process_opcode(opcode: Opcode, stack: list[ScriptOp]) -> SimulationStep:
+def process_opcode(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
     if opcode.disabled:
         message = f"{opcode.label} is disabled"
         return SimulationStep(script=script, stack=stack, message=message, failed=True)
@@ -187,9 +187,9 @@ def simulate_step(script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationSt
     script_op = script.pop(0)
 
     if type(script_op) == Data:
-        step = push_data(script_op, stack)
+        step = push_data(script_op, script, stack)
     elif type(script_op) == Opcode:
-        step = process_opcode(script_op, stack)
+        step = process_opcode(script_op, script, stack)
     else:
         print(type(script_op))
         step = SimulationStep(script, stack, message="TYPE ERROR", failed=True)
@@ -227,13 +227,8 @@ def simulate_script(script: list[ScriptOp]) -> Simulation:
     return Simulation(steps=steps, valid=valid_script)
 
 
-
-if __name__ == "__main__":
-    script_input = input("Enter Script: ")
-    script = construct_script(script_input)
-
-    simulation = simulate_script(script)
-    for i, step in enumerate(simulation.steps):
+def print_simulation(sim: Simulation) -> None:
+    for i, step in enumerate(sim.steps):
         print(f"Step {i}:")
         print(f"Message: {step.message}")
         print(f"Script: {step.script}")
@@ -241,5 +236,18 @@ if __name__ == "__main__":
         print(f"Passed: {not step.failed}")
         print()
     
-    validity = "Valid" if simulation.valid else "Invalid"
+    validity = "Valid" if sim.valid else "Invalid"
     print(f"{validity} script")
+
+
+def main() -> None:
+    script_input = input("Enter Script: ")
+    print()
+
+    script = construct_script(script_input)
+    simulation = simulate_script(script)
+    print_simulation(simulation)
+
+
+if __name__ == "__main__":
+    main()

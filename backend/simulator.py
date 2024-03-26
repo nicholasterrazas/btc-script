@@ -20,13 +20,13 @@ def enough_args(arg_count: int, stack: list[ScriptOp]) -> bool:
 
 def push_data(data: Data, stack: list[ScriptOp]) -> SimulationStep:
     stack.insert(0, data)
-    message = f"<{data}> pushed to stack"
+    message = f"Pushed <{data.value}> to stack"
     
     return SimulationStep(script=script, stack=stack, message=message)
 
 
 def unary_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
-    operand = stack.pop(0)
+    operand = stack.pop(0).value
 
     operation = opcode.label[3:]
     msg = f"Performed {operation} on <{operand}>"
@@ -45,17 +45,17 @@ def unary_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp
         result = int(opcode!=0)
     else:
         msg = f"UNARY OPERATION ERROR: (OPCODE: {opcode}, OPERAND: {operand})"
-        return SimulationStep(script, stack, message=msg, failed=True)
+        return SimulationStep(script=script, stack=stack, message=msg, failed=True)
     
-    stack.insert(0, result)
+    stack.insert(0, Data(value=result))
     msg += f"\nPushed <{result}> to stack"
     
-    return SimulationStep(script, stack, msg)
+    return SimulationStep(script=script, stack=stack, message=msg)
 
 
 def binary_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
-    op1 = stack.pop(0)
-    op2 = stack.pop(0)
+    op1 = stack.pop(0).value
+    op2 = stack.pop(0).value
     
     operation = opcode.label[3:]
     msg = f"Performed {operation} on <{op1}> and <{op2}>" 
@@ -66,41 +66,41 @@ def binary_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptO
         result = op1 - op2
     elif opcode == OP_BOOLAND:
         # If both op1 and op2 are not 0, the output is 1. Otherwise 0.
-        result == int(op1 != 0 and op2 != 0)
+        result = int(op1 != 0 and op2 != 0)
     elif opcode == OP_BOOLOR:
         # If op1 or op2 is not 0, the output is 1. Otherwise 0.
-        result == int(op1 != 0 or op2 != 0)
+        result = op1 != 0 or op2 != 0
     elif opcode == OP_NUMEQUAL:
-        result == int(op1 == op2)
+        result = int(op1 == op2)
     elif opcode == OP_NUMEQUALVERIFY:
-        result == int(op1 == op2)
+        result = int(op1 == op2)
         if result == 1:
             msg += "Verify passed\n"
         else:
             msg += "Verify failed"
-            return SimulationStep(script, stack, msg, failed=True)
+            return SimulationStep(script=script, stack=stack, message=msg, failed=True)
     elif opcode == OP_NUMNOTEQUAL:
-        result == int(op1 != op2)
+        result = op1 != op2
     elif opcode == OP_LESSTHAN:
-        result == int(op1 < op2)
+        result = int(op1 < op2)
     elif opcode == OP_GREATERTHAN:
-        result == int(op1 > op2)
+        result = int(op1 > op2)
     elif opcode == OP_LESSTHANOREQUAL:
-        result == int(op1 <= op2)
+        result = int(op1 <= op2)
     elif opcode == OP_GREATERTHANOREQUAL:
-        result == int(op1 >= op2)
+        result = int(op1 >= op2)
     elif opcode == OP_MIN:
         result = min(op1, op2)
     elif opcode == OP_MAX:
         result = max(op1, op2)
     else:
         msg = f"BINARY OPERATION ERROR: (OPCODE: {opcode}, OPERAND1: {op1}, OPERAND2: {op2})"
-        return SimulationStep(script, stack, message=msg, failed=True)
+        return SimulationStep(script=script, stack=stack, message=msg, failed=True)
     
-    stack.insert(0, result)
+    stack.insert(0, Data(value=result))
     msg += f"\nPushed <{result}> to stack"
 
-    return SimulationStep(script, stack, msg)
+    return SimulationStep(script=script, stack=stack, message=msg)
 
 
 # swaps elements at idx1 and idx2 of stack, and then returns them
@@ -117,8 +117,8 @@ def stack_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp
     msg = f"Performed {operation}\n" 
     
     if opcode == OP_2DROP:
-        first = stack.pop(0)
-        second = stack.pop(0)        
+        first  = stack.pop(0)
+        second = stack.pop(0)
         msg += f"Popped <{first}> and <{second}> from stack"
     elif opcode == OP_2DUP:
         first  = stack[0]
@@ -129,15 +129,16 @@ def stack_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp
     elif opcode == OP_2OVER:
         third  = stack[2]
         fourth = stack[3]
-        stack.insert(0, third)
         stack.insert(0, fourth)
+        stack.insert(0, third)
         msg += f"Duplicated <{third}> and <{fourth}> and pushed them to stack"
     elif opcode == OP_2ROT:
-        fifth = stack[4]
-        sixth = stack[5]
-        stack.insert(0, fifth)
+        print(f"{len(stack)=}")
+        fifth = stack.pop(4)
+        sixth = stack.pop(4)
         stack.insert(0, sixth)
-        msg += f"Duplicated <{fifth}> and <{sixth}> and pushed them to stack"
+        stack.insert(0, fifth)
+        msg += f"Moved <{fifth}> and <{sixth}> to top of stack"
     elif opcode == OP_2SWAP:
         first, third = swap(0, 2, stack)    # swap 1st and 3rd values
         second, fourth = swap(1, 3, stack)  # swap 2nd and 4th values
@@ -149,22 +150,22 @@ def stack_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp
         stack.insert(0, third)
         stack.insert(0, second)
         stack.insert(0, first)
-        msg += f"Duplicated <{first}>, <{second}>, and <{third}>, and pushed them to stack"
+        msg += f"Duplicated <{first}>, <{second}>, <{third}>, and pushed them to stack"
     else:
         msg = f"STACK OPERATION ERROR: (OPCODE: {opcode})"
-        return SimulationStep(script, stack, message=msg, failed=True)
+        return SimulationStep(script=script, stack=stack, message=msg, failed=True)
 
-    return SimulationStep(script, stack, msg)
+    return SimulationStep(script=script, stack=stack, message=msg)
 
 
 def process_opcode(opcode: Opcode, stack: list[ScriptOp]) -> SimulationStep:
     if opcode.disabled:
         message = f"{opcode.label} is disabled"
-        return SimulationStep(script, stack, message, failed=True)
+        return SimulationStep(script=script, stack=stack, message=message, failed=True)
     
     if not enough_args(opcode.arg_count, stack):
-        message = f"{opcode.label} requires {opcode.arg_count} args but was given {len(stack)}"
-        return SimulationStep(script, stack, message, failed=True)
+        message = f"{opcode.label} requires {opcode.arg_count} arguments but was given {len(stack)}"
+        return SimulationStep(script=script, stack=stack, message=message, failed=True)
 
 
     if opcode in UNARY_OPS:     
@@ -179,7 +180,7 @@ def process_opcode(opcode: Opcode, stack: list[ScriptOp]) -> SimulationStep:
         stack.insert(0, opcode)
         msg = f"Logic for {opcode.label} not implemented yet.\n{opcode.label} pushed to stack"
 
-    return SimulationStep(script, stack, msg)
+    return SimulationStep(script=script, stack=stack, message=msg)
 
 
 def simulate_step(script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
@@ -195,6 +196,18 @@ def simulate_step(script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationSt
 
     return step
 
+def validate(stack: list[ScriptOp]) -> bool:
+    # if stack is empty, script is invalid
+    if len(stack) == 0:
+        return False
+    
+    # if top of stack is False (zero value), script is invalid
+    top = stack[0]
+    if top == OP_0 or top == Data(value=0):
+        return False
+    
+    # if top of stack is True (non-zero value), script is valid
+    return True
 
 def simulate_script(script: list[ScriptOp]) -> Simulation:
     stack = []
@@ -206,12 +219,10 @@ def simulate_script(script: list[ScriptOp]) -> Simulation:
         steps.append(step)
         
         if step.failed:
-            break
+            return Simulation(steps=steps, valid=False)
         
     # verify if script is valid at the end of executing it
-    match stack:
-        case ["OP_ZERO"] | [0]: valid_script = False
-        case _:                 valid_script = True
+    valid_script = validate(stack)
 
     return Simulation(steps=steps, valid=valid_script)
 
@@ -223,9 +234,11 @@ if __name__ == "__main__":
 
     simulation = simulate_script(script)
     for i, step in enumerate(simulation.steps):
-        print(f"Step {i}: {step.message}")
+        print(f"Step {i}:")
+        print(f"Message: {step.message}")
         print(f"Script: {step.script}")
         print(f"Stack: {step.stack}")
+        print(f"Passed: {not step.failed}")
         print()
     
     validity = "Valid" if simulation.valid else "Invalid"

@@ -2,6 +2,18 @@ from pydantic import BaseModel
 
 class ScriptOp(BaseModel):
     category: str = "data"
+    
+    def __repr__(self) -> str:
+        if type(self) == Data:
+            return str(self.value)
+        elif type(self) == Opcode:
+            return str(self.label)
+        
+    def __str__(self) -> str:
+        if type(self) == Data:
+            return str(self.value)
+        elif type(self) == Opcode:
+            return str(self.label)
 
 class Data(ScriptOp):
     value: str | int
@@ -293,4 +305,4 @@ def str_to_op(s: str):
 
 
 def parse_script(script: list[str]) -> list[ScriptOp]:
-    return map(str_to_op, script)
+    return list(map(str_to_op, script))

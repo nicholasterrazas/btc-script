@@ -29,7 +29,7 @@ def unary_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp
     operand = stack.pop(0).value
 
     operation = opcode.label[3:]
-    msg = f"Performed {operation} on <{operand}>"
+    msg = f"Performed {operation} on <{operand}>; "
 
     if opcode == OP_1ADD:
         result = operand + 1
@@ -48,7 +48,7 @@ def unary_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp
         return SimulationStep(script=script, stack=stack, message=msg, failed=True)
     
     stack.insert(0, Data(value=result))
-    msg += f"\nPushed <{result}> to stack"
+    msg += f"Pushed <{result}> to stack"
     
     return SimulationStep(script=script, stack=stack, message=msg)
 
@@ -58,7 +58,7 @@ def binary_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptO
     op2 = stack.pop(0).value
     
     operation = opcode.label[3:]
-    msg = f"Performed {operation} on <{op1}> and <{op2}>" 
+    msg = f"Performed {operation} on <{op1}> and <{op2}>; " 
 
     if opcode == OP_ADD:
         result = op1 + op2
@@ -75,7 +75,7 @@ def binary_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptO
     elif opcode == OP_NUMEQUALVERIFY:
         result = int(op1 == op2)
         if result == 1:
-            msg += "Verify passed\n"
+            msg += "Verify passed; "
         else:
             msg += "Verify failed"
             return SimulationStep(script=script, stack=stack, message=msg, failed=True)
@@ -98,7 +98,7 @@ def binary_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptO
         return SimulationStep(script=script, stack=stack, message=msg, failed=True)
     
     stack.insert(0, Data(value=result))
-    msg += f"\nPushed <{result}> to stack"
+    msg += f"Pushed <{result}> to stack"
 
     return SimulationStep(script=script, stack=stack, message=msg)
 
@@ -114,7 +114,7 @@ def swap(idx1: int, idx2: int, stack: list[ScriptOp]) -> tuple[ScriptOp,ScriptOp
 
 def stack_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
     operation = opcode.label[3:]
-    msg = f"Performed {operation}\n" 
+    msg = f"Performed {operation}; " 
     
     if opcode == OP_DEPTH:
         depth = len(stack)
@@ -188,7 +188,7 @@ def process_opcode(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp]
     else:
         # TODO: implement logic for each opcode
         stack.insert(0, opcode)
-        msg = f"Logic for {opcode.label} not implemented yet.\n{opcode.label} pushed to stack"
+        msg = f"Logic for {opcode.label} not implemented yet; {opcode.label} pushed to stack"
 
     return SimulationStep(script=script, stack=stack, message=msg)
 
@@ -202,7 +202,7 @@ def simulate_step(script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationSt
         step = process_opcode(script_op, script, stack)
     else:
         print(type(script_op))
-        step = SimulationStep(script, stack, message="TYPE ERROR", failed=True)
+        step = SimulationStep(script, stack, message=f"TYPE ERROR: (TYPE={type(script_op)})", failed=True)
 
     return step
 

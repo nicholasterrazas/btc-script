@@ -69,9 +69,9 @@ OP_2OVER        = Opcode(label='OP_2OVER', category='stack', arg_count=4)
 OP_2ROT         = Opcode(label='OP_2ROT', category='stack', arg_count=6)
 OP_2SWAP        = Opcode(label='OP_2SWAP', category='stack', arg_count=4)
 OP_IFDUP        = Opcode(label='OP_IFDUP', category='stack')
-OP_DEPTH        = Opcode(label='OP_DEPTH', category='stack')
-OP_DROP         = Opcode(label='OP_DROP', category='stack')
-OP_DUP          = Opcode(label='OP_DUP', category='stack')
+OP_DEPTH        = Opcode(label='OP_DEPTH', category='stack', arg_count=0)
+OP_DROP         = Opcode(label='OP_DROP', category='stack', arg_count=1)
+OP_DUP          = Opcode(label='OP_DUP', category='stack', arg_count=1)
 OP_NIP          = Opcode(label='OP_NIP', category='stack')
 OP_OVER         = Opcode(label='OP_OVER', category='stack')
 OP_PICK         = Opcode(label='OP_PICK', category='stack')
@@ -285,6 +285,9 @@ BINARY_OPS = [
 
 # Opcodes that modify the stack
 STACK_OPS = [
+    OP_DEPTH,
+    OP_DUP,
+    OP_DROP,
     OP_2DROP,
     OP_2DUP,
     OP_2OVER,

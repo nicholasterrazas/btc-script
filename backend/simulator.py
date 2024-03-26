@@ -116,7 +116,17 @@ def stack_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp
     operation = opcode.label[3:]
     msg = f"Performed {operation}\n" 
     
-    if opcode == OP_2DROP:
+    if opcode == OP_DEPTH:
+        depth = len(stack)
+        msg += f"Pushed <{depth}> to stack"
+    elif opcode == OP_DUP:
+        first = stack[0]
+        stack.insert(0, first)
+        msg += f"Pushed <{first}> to stack"
+    elif opcode == OP_DROP:
+        first = stack.pop(0)
+        msg += f"Popped <{first}> from stack"
+    elif opcode == OP_2DROP:
         first  = stack.pop(0)
         second = stack.pop(0)
         msg += f"Popped <{first}> and <{second}> from stack"

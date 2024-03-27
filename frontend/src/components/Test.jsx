@@ -6,11 +6,11 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { ButtonGroup, IconButton, List, ListItem, ListItemButton, ListItemText, Stack, TextField, Tooltip } from '@mui/material';
-import { ArrowBackIos, AutoFixHigh, Code, FirstPage, LastPage, NavigateBefore, NavigateNext } from '@mui/icons-material';
+import { ArrowBackIos, AssignmentTurnedIn, AutoFixHigh, Code, EditNote, FirstPage, IntegrationInstructions, LastPage, NavigateBefore, NavigateNext, NoteAlt } from '@mui/icons-material';
 
-const steps = ['Select Script', 'Simulate Script', 'Evaluate Script'];
+const steps = ['Choose Script', 'Simulate Script', 'Assess Script'];
 
-function Select() {
+function Choose({setActiveStep}) {
     const [lock, setLock] = React.useState('');
     const [key, setKey] = React.useState('');
 
@@ -31,42 +31,43 @@ function Select() {
         </Tooltip>
     );
 
+    const handleSimulateScript = () => {
+        setActiveStep(1);
+    };
+
     return (
-        <Box>
+        <Stack direction='column' justifyContent='center' alignItems='center' spacing={2}>
+            <Stack direction='row' justifyContent='center' alignItems='flex-start'>
+                <Stack pl={5} direction='column' justifyContent='center' alignItems='center' spacing={2}>
+            
+                    <TextField
+                        id='Lock'
+                        label='Lock'
+                        sx={{ width: '500px' }}
+                        multiline
+                        onChange={(event) => setLock(event.target.value)}
+                    />
 
-            <Stack direction='column' justifyContent='center' alignItems='center' spacing={2}>
-                <Stack direction='row' justifyContent='center' alignItems='flex-start'>
-                    <Stack pl={5} direction='column' justifyContent='center' alignItems='center' spacing={2}>
-                
-                        <TextField
-                            id='Lock'
-                            label='Lock'
-                            sx={{ width: '500px' }}
-                            multiline
-                            onChange={(event) => setLock(event.target.value)}
-                        />
-
-                        <TextField
-                            id='Key'
-                            label='Key'
-                            sx={{ width: '500px' }}
-                            multiline
-                            onChange={(event) => setKey(event.target.value)}
-                        />
-                    </Stack>
-                    {scriptEditorNavigation}
+                    <TextField
+                        id='Key'
+                        label='Key'
+                        sx={{ width: '500px' }}
+                        multiline
+                        onChange={(event) => setKey(event.target.value)}
+                    />
                 </Stack>
-
-                <Button 
-                    variant='contained' 
-                    disabled={oneScriptEmpty} 
-                    endIcon={<Code htmlColor={!oneScriptEmpty && 'gold'}/>}
-                >
-                    Simulate Script
-                </Button>
+                {scriptEditorNavigation}
             </Stack>
 
-        </Box>
+            <Button 
+                variant='contained' 
+                disabled={oneScriptEmpty} 
+                endIcon={<IntegrationInstructions htmlColor={!oneScriptEmpty && 'gold'}/>}
+                onClick={handleSimulateScript}
+            >
+                Simulate Script
+            </Button>
+        </Stack>
     );
 }
 
@@ -111,22 +112,22 @@ function SimulationNavigation({stepCount, activeSimulationStep, setActiveSimulat
 
     return (
         <Stack direction='row'>
-            <Tooltip title="Go to first step">
+            <Tooltip title="Go to first step" placement='top'>
                 <IconButton onClick={handleFirst} disabled={activeSimulationStep === 0}>
                     <FirstPage fontSize='large' />
                 </IconButton>
             </Tooltip>
-            <Tooltip title="Go to previous step">
+            <Tooltip title="Go to previous step" placement='top'>
                 <IconButton onClick={handleBack} disabled={activeSimulationStep === 0}>
                     <NavigateBefore fontSize='large' />
                 </IconButton>
             </Tooltip>
-            <Tooltip title="Go to next step">
+            <Tooltip title="Go to next step" placement='top'>
                 <IconButton onClick={handleNext} disabled={activeSimulationStep === lastStep}>
                     <NavigateNext fontSize='large' />
                 </IconButton>
             </Tooltip>
-            <Tooltip title="Go to last step">
+            <Tooltip title="Go to last step" placement='top'>
                 <IconButton onClick={handleLast} disabled={activeSimulationStep === lastStep}>
                     <LastPage fontSize='large' />
                 </IconButton>
@@ -135,86 +136,99 @@ function SimulationNavigation({stepCount, activeSimulationStep, setActiveSimulat
     );
 }
 
-function Simulate({simulationSteps}) {
+function Simulate({simulationSteps, setActiveStep}) {
     const [activeSimulationStep, setActiveSimulationStep] = React.useState(0);
     const stepCount = simulationSteps.length;
 
     let currentSimulationStep = simulationSteps[activeSimulationStep];
 
+    const handleChooseScript = () => {
+        setActiveStep(0);
+    };
+
+    const handleAssessScript = () => {
+        setActiveStep(2);
+    };
+
+
     return (
-        <Box >
-            <Stack direction='column' justifyContent='center' alignItems='center' spacing={1}>
-                <h2>Step {activeSimulationStep}: {currentSimulationStep.message}</h2>
+        <Stack direction='column' justifyContent='center' alignItems='center' spacing={1}>
+            <h2>Step {activeSimulationStep}: {currentSimulationStep.message}</h2>
 
-                <Stack minHeight={250} direction='row' justifyContent='center' alignItems='flex-start' spacing={2}>
-                    <ScriptStack stack={currentSimulationStep.script} title='Script'/>
-                    <ScriptStack stack={currentSimulationStep.stack} title='Stack' />
-                </Stack>
-
-
-                <SimulationNavigation 
-                    stepCount={stepCount}
-                    activeSimulationStep={activeSimulationStep}
-                    setActiveSimulationStep={setActiveSimulationStep}
-                />
-
+            <Stack minHeight={250} direction='row' justifyContent='center' alignItems='flex-start' spacing={2}>
+                <ScriptStack stack={currentSimulationStep.script} title='Script'/>
+                <ScriptStack stack={currentSimulationStep.stack} title='Stack' />
             </Stack>
 
-        </Box>
+
+            <SimulationNavigation 
+                stepCount={stepCount}
+                activeSimulationStep={activeSimulationStep}
+                setActiveSimulationStep={setActiveSimulationStep}
+            />
+
+            <Stack minHeight={250} direction='row' justifyContent='center' alignItems='flex-start' spacing={2}>
+
+                <Button variant='outlined' onClick={handleChooseScript} endIcon={<NoteAlt />} >
+                    Adjust Script
+                </Button>
+
+                <Button variant='contained' onClick={handleAssessScript} endIcon={<AssignmentTurnedIn htmlColor={'gold'}/>} >
+                    Assess Script
+                </Button>
+            </Stack>
+
+        </Stack>
     );
 }
 
-function Evaluate({steps, valid}) {
+function Assess({simulation, setActiveStep}) {
+    
+    const lastStep = simulation.steps[simulation.steps.length-1];
+    const finalStack = lastStep.stack;
+
     let message;
-    if (valid) {
+    if (simulation.valid) {
         message = "Valid Script!";
     } else {
         message = "Invalid Script!";
     }
+
+    const handleChooseScript = () => {
+        setActiveStep(0);
+    };
+
+    const handleSimulateScript = () => {
+        setActiveStep(1);
+    };
+
+    
     return (
-        <h2>{message}</h2>
+        <Stack direction='column' justifyContent='center' alignItems='center' spacing={2}>
+            <h2>{message}</h2>
+
+            <ScriptStack stack={finalStack} title="Final Stack" />
+
+            <Stack minHeight={250} direction='row' justifyContent='center' alignItems='flex-start' spacing={2}>
+                <Button variant='outlined' onClick={handleSimulateScript} endIcon={<IntegrationInstructions/>} >
+                    Restart Simulation
+                </Button>
+                <Button variant='contained' onClick={handleChooseScript} endIcon={<NoteAlt/>} >
+                    Choose new Script
+                </Button>
+            </Stack>
+        </Stack>    
     );
 }
 
 function LinearStepper({activeStep, setActiveStep}) {
-    const [skipped, setSkipped] = React.useState(new Set());
-
-    const isStepOptional = (step) => {
-        return false;
-    };
-
-    const isStepSkipped = (step) => {
-        return skipped.has(step);
-    };
 
     const handleNext = () => {
-        let newSkipped = skipped;
-        if (isStepSkipped(activeStep)) {
-            newSkipped = new Set(newSkipped.values());
-            newSkipped.delete(activeStep);
-        }
-
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setSkipped(newSkipped);
     };
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
-
-    const handleSkip = () => {
-        if (!isStepOptional(activeStep)) {
-            // You probably want to guard against something like this,
-            // it should never occur unless someone's actively trying to break something.
-            throw new Error("You can't skip a step that isn't optional.");
-        }
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setSkipped((prevSkipped) => {
-            const newSkipped = new Set(prevSkipped.values());
-            newSkipped.add(activeStep);
-            return newSkipped;
-        });
     };
 
     const handleReset = () => {
@@ -224,23 +238,11 @@ function LinearStepper({activeStep, setActiveStep}) {
     return (
         <Box sx={{ width: '100%' }}>
             <Stepper activeStep={activeStep}>
-                {steps.map((label, index) => {
-                    const stepProps = {};
-                    const labelProps = {};
-                    if (isStepOptional(index)) {
-                        labelProps.optional = (
-                            <Typography variant="caption">Optional</Typography>
-                        );
-                    }
-                    if (isStepSkipped(index)) {
-                        stepProps.completed = false;
-                    }
-                    return (
-                        <Step key={label} {...stepProps}>
-                            <StepLabel {...labelProps}>{label}</StepLabel>
-                        </Step>
-                    );
-                })}
+                {steps.map((label, index) => 
+                    <Step key={label}>
+                        <StepLabel >{label}</StepLabel>
+                    </Step>
+                )}
             </Stepper>
             {activeStep === steps.length ? (
                 <React.Fragment>
@@ -265,12 +267,6 @@ function LinearStepper({activeStep, setActiveStep}) {
                             Back
                         </Button>
                         <Box sx={{ flex: '1 1 auto' }} />
-                        {isStepOptional(activeStep) && (
-                            <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                                Skip
-                            </Button>
-                        )}
-
                         <Button onClick={handleNext}>
                             {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                         </Button>
@@ -286,7 +282,7 @@ const fakeSimulation = {
         {script: [1, 1, 'OP_ADD'],  stack: [],      message: 'Initial setup', failed: false},
         {script: [1, 'OP_ADD'],     stack: [1],     message: 'Pushed <1> to stack', failed: false},
         {script: ['OP_ADD'],        stack: [1, 1],  message: 'Pushed <1> to stack', failed: false},
-        {script: [],                stack: [2],     message: 'Performed ADD on <1> and 1; Pushed <2> to stack', failed: false}
+        {script: [],                stack: [2],     message: 'Performed ADD on <1> and <1>; Pushed <2> to stack', failed: false}
     ],
     valid: true
 }
@@ -300,14 +296,14 @@ export default function Test() {
 
     let screen;
     if (activeStep === 0) {
-        console.log('Selecting Script');
-        screen = <Select />
+        console.log('Choosing Script');
+        screen = <Choose setActiveStep={setActiveStep} />
     } else if (activeStep === 1) {
         console.log('Simulating Script');
-        screen = <Simulate simulationSteps={simulation.steps} />
+        screen = <Simulate simulationSteps={simulation.steps} setActiveStep={setActiveStep} />
     } else if (activeStep === 2) {
-        console.log('Evaluating Script');
-        screen = <Evaluate />
+        console.log('Assessing Script');
+        screen = <Assess simulation={simulation} setActiveStep={setActiveStep} />
     } else {
         console.error('Step out of range: ' + activeStep);
         screen = null;
@@ -316,9 +312,11 @@ export default function Test() {
     return (
         <>
             <h1 id='test' style={{ paddingTop: '45px' }}>Test</h1>
-            <Stack alignItems='center' spacing={3}>
+            <Stack direction='column' alignItems='center'>
+                <Box minHeight={500}>
+                    {screen}
+                </Box>   
                 <LinearStepper activeStep={activeStep} setActiveStep={setActiveStep}/>
-                {screen}
             </Stack>
         </>
     );

@@ -70,9 +70,24 @@ function Select() {
     );
 }
 
-function Simulate() {
+function ScriptStack({stack}) {
     return (
-        null
+        stack.map(op => <p>{op}</p>)
+    );
+}
+
+function Simulate({simulationSteps}) {
+    const [activeSimulationStep, setActiveSimulationStep] = React.useState(0);
+
+    let currentSimulationStep = simulationSteps[activeSimulationStep];
+
+    return (
+        <Box>
+            <ScriptStack stack={currentSimulationStep.script} />
+            <ScriptStack stack={currentSimulationStep.stack} />
+            <p>{currentSimulationStep.message}</p>
+            <p>{currentSimulationStep.passed}</p>
+        </Box>
     );
 }
 
@@ -82,8 +97,7 @@ function Evaluate() {
     );
 }
 
-function LinearStepper() {
-    const [activeStep, setActiveStep] = React.useState(0);
+function LinearStepper({activeStep, setActiveStep}) {
     const [skipped, setSkipped] = React.useState(new Set());
 
     const isStepOptional = (step) => {
@@ -188,15 +202,44 @@ function LinearStepper() {
     );
 }
 
+const fakeSimulation = {
+    steps: [
+        {script: [1, 1, 'OP_ADD'],  stack: [],      message: 'Initial step', failed: false},
+        {script: [1, 'OP_ADD'],     stack: [1],     message: 'Pushed <1> to stack', failed: false},
+        {script: ['OP_ADD'],        stack: [1, 1],  message: 'Pushed <1> to stack', failed: false},
+        {script: [],                stack: [2],     message: 'Performed ADD on <1> and 1; Pushed <2> to stack', failed: false}
+    ],
+    valid: true
+}
+
 
 export default function Test() {
+    const [activeStep, setActiveStep] = React.useState(0);
+    const [simulation, setSimulation] = React.useState(fakeSimulation);
+
+
+
+    let screen;
+    if (activeStep === 0) {
+        console.log('Selecting Script');
+        screen = <Select />
+    } else if (activeStep === 1) {
+        console.log('Simulating Script');
+        screen = <Simulate simulationSteps={simulation.steps} />
+    } else if (activeStep === 2) {
+        console.log('Evaluating Script');
+        screen = <Evaluate />
+    } else {
+        console.error('Step out of range: ' + activeStep);
+        screen = null;
+    }
 
     return (
         <>
             <h1 id='test' style={{ paddingTop: '45px' }}>Test</h1>
             <Stack alignItems='center' spacing={3}>
-                <LinearStepper />
-                <Select />
+                <LinearStepper activeStep={activeStep} setActiveStep={setActiveStep}/>
+                {screen}
             </Stack>
         </>
     );

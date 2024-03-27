@@ -5,8 +5,8 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { IconButton, Stack, TextField, Tooltip } from '@mui/material';
-import { AutoFixHigh, Code } from '@mui/icons-material';
+import { ButtonGroup, IconButton, List, ListItem, ListItemButton, ListItemText, Stack, TextField, Tooltip } from '@mui/material';
+import { ArrowBackIos, AutoFixHigh, Code, FirstPage, LastPage, NavigateBefore, NavigateNext } from '@mui/icons-material';
 
 const steps = ['Select Script', 'Simulate Script', 'Evaluate Script'];
 
@@ -70,30 +70,109 @@ function Select() {
     );
 }
 
-function ScriptStack({stack}) {
+function ScriptStack({stack, title}) {
+    
     return (
-        stack.map(op => <p>{op}</p>)
+        <Box minWidth={250}>
+            <h3>{title}</h3>
+            <List sx={{border: 1, borderRadius: 2}}>
+                {(stack.length >= 1) ? (stack.map((op, idx) => (
+                    <ListItemButton key={idx} disablePadding>
+                        <ListItemText primary={op} />
+                    </ListItemButton>
+                ))) : (
+                    <ListItemButton key={0} disablePadding>
+                        <ListItemText primary="EMPTY" />
+                    </ListItemButton>
+                )}
+            </List>        
+        </Box>
+    );
+}
+
+function SimulationNavigation({stepCount, activeSimulationStep, setActiveSimulationStep}) {
+    const lastStep = stepCount - 1;
+    
+    const handleFirst = () => {
+        setActiveSimulationStep(0);
+    }
+
+    const handleBack = () => {
+        setActiveSimulationStep(step => step-1);
+    }
+
+    const handleNext = () => {
+        setActiveSimulationStep(step => step+1);
+    }
+
+    const handleLast = () => {
+        setActiveSimulationStep(lastStep);
+    }
+
+    return (
+        <Stack direction='row'>
+            <Tooltip title="Go to first step">
+                <IconButton onClick={handleFirst} disabled={activeSimulationStep === 0}>
+                    <FirstPage fontSize='large' />
+                </IconButton>
+            </Tooltip>
+            <Tooltip title="Go to previous step">
+                <IconButton onClick={handleBack} disabled={activeSimulationStep === 0}>
+                    <NavigateBefore fontSize='large' />
+                </IconButton>
+            </Tooltip>
+            <Tooltip title="Go to next step">
+                <IconButton onClick={handleNext} disabled={activeSimulationStep === lastStep}>
+                    <NavigateNext fontSize='large' />
+                </IconButton>
+            </Tooltip>
+            <Tooltip title="Go to last step">
+                <IconButton onClick={handleLast} disabled={activeSimulationStep === lastStep}>
+                    <LastPage fontSize='large' />
+                </IconButton>
+            </Tooltip>
+        </Stack>
     );
 }
 
 function Simulate({simulationSteps}) {
     const [activeSimulationStep, setActiveSimulationStep] = React.useState(0);
+    const stepCount = simulationSteps.length;
 
     let currentSimulationStep = simulationSteps[activeSimulationStep];
 
     return (
-        <Box>
-            <ScriptStack stack={currentSimulationStep.script} />
-            <ScriptStack stack={currentSimulationStep.stack} />
-            <p>{currentSimulationStep.message}</p>
-            <p>{currentSimulationStep.passed}</p>
+        <Box >
+            <Stack direction='column' justifyContent='center' alignItems='center' spacing={1}>
+                <h2>Step {activeSimulationStep}: {currentSimulationStep.message}</h2>
+
+                <Stack minHeight={250} direction='row' justifyContent='center' alignItems='flex-start' spacing={2}>
+                    <ScriptStack stack={currentSimulationStep.script} title='Script'/>
+                    <ScriptStack stack={currentSimulationStep.stack} title='Stack' />
+                </Stack>
+
+
+                <SimulationNavigation 
+                    stepCount={stepCount}
+                    activeSimulationStep={activeSimulationStep}
+                    setActiveSimulationStep={setActiveSimulationStep}
+                />
+
+            </Stack>
+
         </Box>
     );
 }
 
-function Evaluate() {
+function Evaluate({steps, valid}) {
+    let message;
+    if (valid) {
+        message = "Valid Script!";
+    } else {
+        message = "Invalid Script!";
+    }
     return (
-        null
+        <h2>{message}</h2>
     );
 }
 
@@ -204,7 +283,7 @@ function LinearStepper({activeStep, setActiveStep}) {
 
 const fakeSimulation = {
     steps: [
-        {script: [1, 1, 'OP_ADD'],  stack: [],      message: 'Initial step', failed: false},
+        {script: [1, 1, 'OP_ADD'],  stack: [],      message: 'Initial setup', failed: false},
         {script: [1, 'OP_ADD'],     stack: [1],     message: 'Pushed <1> to stack', failed: false},
         {script: ['OP_ADD'],        stack: [1, 1],  message: 'Pushed <1> to stack', failed: false},
         {script: [],                stack: [2],     message: 'Performed ADD on <1> and 1; Pushed <2> to stack', failed: false}

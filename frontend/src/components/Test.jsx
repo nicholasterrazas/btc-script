@@ -70,9 +70,24 @@ function Select() {
     );
 }
 
-function Simulate() {
+function ScriptStack({stack}) {
     return (
-        null
+        stack.map(op => <p>{op}</p>)
+    );
+}
+
+function Simulate({simulationSteps}) {
+    const [activeSimulationStep, setActiveSimulationStep] = React.useState(0);
+
+    let currentSimulationStep = simulationSteps[activeSimulationStep];
+
+    return (
+        <Box>
+            <ScriptStack stack={currentSimulationStep.script} />
+            <ScriptStack stack={currentSimulationStep.stack} />
+            <p>{currentSimulationStep.message}</p>
+            <p>{currentSimulationStep.passed}</p>
+        </Box>
     );
 }
 
@@ -187,9 +202,22 @@ function LinearStepper({activeStep, setActiveStep}) {
     );
 }
 
+const fakeSimulation = {
+    steps: [
+        {script: [1, 1, 'OP_ADD'],  stack: [],      message: 'Initial step', failed: false},
+        {script: [1, 'OP_ADD'],     stack: [1],     message: 'Pushed <1> to stack', failed: false},
+        {script: ['OP_ADD'],        stack: [1, 1],  message: 'Pushed <1> to stack', failed: false},
+        {script: [],                stack: [2],     message: 'Performed ADD on <1> and 1; Pushed <2> to stack', failed: false}
+    ],
+    valid: true
+}
+
 
 export default function Test() {
     const [activeStep, setActiveStep] = React.useState(0);
+    const [simulation, setSimulation] = React.useState(fakeSimulation);
+
+
 
     let screen;
     if (activeStep === 0) {
@@ -197,7 +225,7 @@ export default function Test() {
         screen = <Select />
     } else if (activeStep === 1) {
         console.log('Simulating Script');
-        screen = <Simulate />
+        screen = <Simulate simulationSteps={simulation.steps} />
     } else if (activeStep === 2) {
         console.log('Evaluating Script');
         screen = <Evaluate />

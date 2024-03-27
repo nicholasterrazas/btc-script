@@ -3,7 +3,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import { OPCODES, P2MS, P2PK, P2PKH, RETURN } from './Opcodes';
 import { Autocomplete, Box, Button, ButtonGroup, Collapse, Divider, FormControl, FormControlLabel, IconButton, InputLabel, ListItemButton, ListItemIcon, ListItemText, ListSubheader, MenuItem, Select, Stack, Switch, TextField, } from '@mui/material';
-import {Abc, AccountTree, Alarm, Calculate, Clear, ExpandLess, ExpandMore, FormatQuote, Layers, Lock, LooksOne, LooksTwo, Timer10, Timer10SelectSharp} from '@mui/icons-material/';
+import {Abc, AccountTree, Calculate, Clear, ExpandLess, ExpandMore, FormatQuote, Layers, LockClock, LooksOne, LooksTwo, Password, Timer10, Timer10SelectSharp} from '@mui/icons-material/';
 
 
 function Settings({setShowDisabled, setShowPrefix, setShowHex}) {
@@ -102,8 +102,8 @@ function OpcodeList({showDisabled, showHex, scriptOpcodes1, setScriptOpcodes1, s
         {name: 'Splice', icon: <FormatQuote />}, 
         {name: 'Bitwise Logic', icon: <Timer10SelectSharp />}, 
         {name: 'Arithmetic', icon:<Calculate /> }, 
-        {name: 'Crypto', icon: <Lock />}, 
-        {name: 'Locktime', icon: <Alarm />}
+        {name: 'Crypto', icon: <Password />}, 
+        {name: 'Locktime', icon: <LockClock />}
     ];
     let categories = categoryAttributes.map(category => (
         {

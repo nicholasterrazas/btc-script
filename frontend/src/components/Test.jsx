@@ -11,19 +11,17 @@ import { ArrowBackIos, AssignmentTurnedIn, AutoFixHigh, Code, EditNote, FirstPag
 const steps = ['Choose Script', 'Simulate Script', 'Assess Script'];
 
 function Choose({setActiveStep}) {
-    const [lock, setLock] = React.useState('');
-    const [key, setKey] = React.useState('');
+    const [script, setScript] = React.useState('');
 
-    const bothScriptsEmpty = (lock === '' && key === '');
-    const oneScriptEmpty = (lock === '' || key === '');
+    const scriptEmpty = (script === '');
 
     const scriptEditorNavigation = (
         <Tooltip 
-            title={(bothScriptsEmpty ? 'Create' : 'Modify') + ' script using Script Editor'}
+            title={(scriptEmpty ? 'Create' : 'Modify') + ' script using Script Constructor'}
             placement='right'
         >
             <IconButton 
-                aria-label='navigate to Create page to access Script Editor'
+                aria-label='navigate to Create page to access Script Constructor'
                 href='/create' disableTouchRipple
             >
                 <AutoFixHigh htmlColor='gold'/>
@@ -38,31 +36,20 @@ function Choose({setActiveStep}) {
     return (
         <Stack direction='column' justifyContent='center' alignItems='center' spacing={2}>
             <Stack direction='row' justifyContent='center' alignItems='flex-start'>
-                <Stack pl={5} direction='column' justifyContent='center' alignItems='center' spacing={2}>
-            
-                    <TextField
-                        id='Lock'
-                        label='Lock'
-                        sx={{ width: '500px' }}
-                        multiline
-                        onChange={(event) => setLock(event.target.value)}
-                    />
-
-                    <TextField
-                        id='Key'
-                        label='Key'
-                        sx={{ width: '500px' }}
-                        multiline
-                        onChange={(event) => setKey(event.target.value)}
-                    />
-                </Stack>
+                <TextField
+                    id='Script'
+                    label='Script'
+                    sx={{ width: '500px' }}
+                    multiline
+                    onChange={(event) => setScript(event.target.value)}
+                />
                 {scriptEditorNavigation}
             </Stack>
 
             <Button 
                 variant='contained' 
-                disabled={oneScriptEmpty} 
-                endIcon={<IntegrationInstructions htmlColor={!oneScriptEmpty && 'gold'}/>}
+                disabled={scriptEmpty} 
+                endIcon={<IntegrationInstructions htmlColor={!scriptEmpty && 'gold'}/>}
                 onClick={handleSimulateScript}
             >
                 Simulate Script
@@ -112,22 +99,22 @@ function SimulationNavigation({stepCount, activeSimulationStep, setActiveSimulat
 
     return (
         <Stack direction='row'>
-            <Tooltip title="Go to first step" placement='top'>
+            <Tooltip title="First step" placement='top'>
                 <IconButton onClick={handleFirst} disabled={activeSimulationStep === 0}>
                     <FirstPage fontSize='large' />
                 </IconButton>
             </Tooltip>
-            <Tooltip title="Go to previous step" placement='top'>
+            <Tooltip title="Previous step" placement='top'>
                 <IconButton onClick={handleBack} disabled={activeSimulationStep === 0}>
                     <NavigateBefore fontSize='large' />
                 </IconButton>
             </Tooltip>
-            <Tooltip title="Go to next step" placement='top'>
+            <Tooltip title="Next step" placement='top'>
                 <IconButton onClick={handleNext} disabled={activeSimulationStep === lastStep}>
                     <NavigateNext fontSize='large' />
                 </IconButton>
             </Tooltip>
-            <Tooltip title="Go to last step" placement='top'>
+            <Tooltip title="Last step" placement='top'>
                 <IconButton onClick={handleLast} disabled={activeSimulationStep === lastStep}>
                     <LastPage fontSize='large' />
                 </IconButton>

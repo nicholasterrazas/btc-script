@@ -6,7 +6,7 @@ import { Autocomplete, Box, Button, ButtonGroup, Collapse, Divider, FormControl,
 import {Abc, AccountTree, Calculate, Clear, ExpandLess, ExpandMore, FormatQuote, Key, Layers, Lock, LockClock, LooksOne, LooksTwo, Password, Timer10, Timer10SelectSharp} from '@mui/icons-material/';
 
 
-function Settings({setShowDisabled, setShowPrefix, setShowHex}) {
+function Settings({setShowDisabled, setShowPrefix, setShowHex, scriptOpcodes1, setScriptOpcodes1, scriptOpcodes2, setScriptOpcodes2}) {
     
     const toggleDisabledDisplay = () => {
         setShowDisabled((prevShowDisabled) => !prevShowDisabled);
@@ -21,24 +21,31 @@ function Settings({setShowDisabled, setShowPrefix, setShowHex}) {
     };
 
     return (
-        <>
+        <Box>
             <h3>Settings</h3>
+            <Stack direction='row' alignItems='center'>
+                <SelectScriptType 
+                    scriptOpcodes1={scriptOpcodes1} 
+                    setScriptOpcodes1={setScriptOpcodes1}
+                    scriptOpcodes2={scriptOpcodes2} 
+                    setScriptOpcodes2={setScriptOpcodes2}
+                />
 
-            <FormControlLabel 
-                control={<Switch defaultChecked onChange={toggleDisabledDisplay}/>} 
-                label="Show disabled opcodes"
-            />
+                <FormControlLabel 
+                    control={<Switch defaultChecked onChange={toggleDisabledDisplay}/>} 
+                    label="Show disabled opcodes"
+                />
 
-            <FormControlLabel 
-                control={<Switch defaultChecked onChange={togglePrefixDisplay}/>} 
-                label="Show 'OP' prefix in script"
-            />
-            <FormControlLabel 
-                control={<Switch defaultChecked onChange={toggleHexDisplay}/>} 
-                label="Show hex equivalent"
-            />
-
-        </>
+                <FormControlLabel 
+                    control={<Switch defaultChecked onChange={togglePrefixDisplay}/>} 
+                    label="Show 'OP' prefix in script"
+                />
+                <FormControlLabel 
+                    control={<Switch defaultChecked onChange={toggleHexDisplay}/>} 
+                    label="Show hex equivalent"
+                />
+            </Stack>
+        </Box>
     )
 
 }
@@ -341,16 +348,15 @@ export default function Create() {
     return (
         <>
             <h1 id='create' style={{paddingTop:'45px'}}>Create</h1>
-            <SelectScriptType 
-                scriptOpcodes1={scriptOpcodes1} 
-                setScriptOpcodes1={setScriptOpcodes1}
-                scriptOpcodes2={scriptOpcodes2} 
-                setScriptOpcodes2={setScriptOpcodes2}                
-            />
             <Settings 
                 setShowDisabled={setShowDisabled}
                 setShowPrefix={setShowPrefix}
                 setShowHex={setShowHex}
+
+                scriptOpcodes1={scriptOpcodes1} 
+                setScriptOpcodes1={setScriptOpcodes1}
+                scriptOpcodes2={scriptOpcodes2}
+                setScriptOpcodes2={setScriptOpcodes2}
             />
 
             <Stack direction='row' alignItems='flex-start' justifyContent='center'>

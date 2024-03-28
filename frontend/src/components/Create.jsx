@@ -1,12 +1,12 @@
 import * as React from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import { OPCODES, P2MS, P2PK, P2PKH, RETURN } from './Opcodes';
-import { Autocomplete, Box, Button, ButtonGroup, Collapse, Divider, FormControl, FormControlLabel, IconButton, InputLabel, ListItemButton, ListItemIcon, ListItemText, ListSubheader, MenuItem, Select, Stack, Switch, TextField, } from '@mui/material';
-import {Abc, AccountTree, Calculate, Clear, ExpandLess, ExpandMore, FormatQuote, Layers, LockClock, LooksOne, LooksTwo, Password, Timer10, Timer10SelectSharp} from '@mui/icons-material/';
+import { OPCODES, P2MS, P2PK, P2PKH, RETURN, value } from './Opcodes';
+import { Accordion, AccordionDetails, AccordionSummary, Autocomplete, Box, Button, Collapse, Divider, FormControl, FormControlLabel, Icon, IconButton, InputLabel, ListItemButton, ListItemIcon, ListItemText, ListSubheader, MenuItem, Select, Stack, Switch, TextField, ToggleButton, ToggleButtonGroup, } from '@mui/material';
+import {Abc, AccountTree, Calculate, Clear, ExpandLess, ExpandMore, FormatQuote, Key, Layers, Lock, LockClock, Password, Settings, Timer10SelectSharp} from '@mui/icons-material/';
 
 
-function Settings({setShowDisabled, setShowPrefix, setShowHex}) {
+function ScriptSettings({setShowDisabled, setShowPrefix, setShowHex, scriptOpcodes1, setScriptOpcodes1, scriptOpcodes2, setScriptOpcodes2}) {
     
     const toggleDisabledDisplay = () => {
         setShowDisabled((prevShowDisabled) => !prevShowDisabled);
@@ -21,29 +21,47 @@ function Settings({setShowDisabled, setShowPrefix, setShowHex}) {
     };
 
     return (
-        <>
-            <h3>Settings</h3>
+        <Box>
+            <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMore />}
+                    aria-controls='settings'
+                    id='settings-summary'
+                >
+                    <Settings />
+                    <b>Settings</b>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Stack direction='row' alignItems='center'>
+                        <SelectScriptType 
+                            scriptOpcodes1={scriptOpcodes1} 
+                            setScriptOpcodes1={setScriptOpcodes1}
+                            scriptOpcodes2={scriptOpcodes2} 
+                            setScriptOpcodes2={setScriptOpcodes2}
+                        />
 
-            <FormControlLabel 
-                control={<Switch defaultChecked onChange={toggleDisabledDisplay}/>} 
-                label="Show disabled opcodes"
-            />
+                        <FormControlLabel 
+                            control={<Switch defaultChecked onChange={toggleDisabledDisplay}/>} 
+                            label="Show disabled opcodes"
+                        />
 
-            <FormControlLabel 
-                control={<Switch defaultChecked onChange={togglePrefixDisplay}/>} 
-                label="Show 'OP' prefix in script"
-            />
-            <FormControlLabel 
-                control={<Switch defaultChecked onChange={toggleHexDisplay}/>} 
-                label="Show hex equivalent"
-            />
-
-        </>
+                        <FormControlLabel 
+                            control={<Switch defaultChecked onChange={togglePrefixDisplay}/>} 
+                            label="Show 'OP' prefix in script"
+                        />
+                        <FormControlLabel 
+                            control={<Switch defaultChecked onChange={toggleHexDisplay}/>} 
+                            label="Show hex equivalent"
+                        />
+                    </Stack>
+                </AccordionDetails>
+            </Accordion>
+        </Box>
     )
 
 }
 
-function CategoryList({category, icon, opcodes, showHex, addToScript1, addToScript2}) {
+function CategoryList({category, icon, opcodes, showHex, addToScript}) {
     const [open, setOpen] = React.useState(false);
     
     const handleClick = () => {
@@ -64,22 +82,13 @@ function CategoryList({category, icon, opcodes, showHex, addToScript1, addToScri
             <Divider />
             <List>
                 {opcodes.map(op => (
-                    <ListItem 
+                    <ListItemButton
                         key={`${op.label}`} 
                         style={{color: op.disabled && '#ef5350'}}
+                        onClick={() => addToScript(op)}
                     >
                         <ListItemText primary={`${op.label}`} secondary={showHex && `${op.hex}`} />
-                        <ListItemIcon>
-                            <IconButton onClick={() => addToScript1(op)}>
-                                <LooksOne />
-                            </IconButton>
-                        </ListItemIcon>
-                        <ListItemIcon>
-                            <IconButton onClick={() => addToScript2(op)}>
-                                <LooksTwo />
-                            </IconButton>
-                        </ListItemIcon>                   
-                    </ListItem> 
+                    </ListItemButton> 
                 ))}
             </List>
             <Divider />
@@ -89,7 +98,7 @@ function CategoryList({category, icon, opcodes, showHex, addToScript1, addToScri
 }
 
 
-function OpcodeList({showDisabled, showHex, scriptOpcodes1, setScriptOpcodes1, scriptOpcodes2, setScriptOpcodes2}) {    
+function OpcodeList({showDisabled, showHex, script, setScript}) {    
     const [selectedOpcode, setSelectedOpcode] = React.useState(null);
 
     // use either all opcodes, or only opcodes that are not disabled 
@@ -113,47 +122,30 @@ function OpcodeList({showDisabled, showHex, scriptOpcodes1, setScriptOpcodes1, s
         }
     ));
 
-    const addToScript1 = (opcode) => {
-        const newScriptOpcodes = [...scriptOpcodes1, opcode];
-        setScriptOpcodes1(newScriptOpcodes);
-    };
-
-    const addToScript2 = (opcode) => {
-        const newScriptOpcodes = [...scriptOpcodes2, opcode];
-        setScriptOpcodes2(newScriptOpcodes);
+    const addToScript = (opcode) => {
+        const newScript = [...script, opcode];
+        setScript(newScript);
     };
 
     return (
-        <Box width='33%'>
-            <h2>Opcodes</h2>
+        <Box>
+            <h3>Opcodes</h3>
             
             <Autocomplete 
                 disablePortal
                 id='opcode-autocomplete'
                 options={ops}
-                sx={{width: 350}}
                 renderInput={(params) => <TextField {...params} label="Search Opcode" />}
                 onChange={(event, value) => setSelectedOpcode(value)}
             />
-            <ButtonGroup>
-                <Button
-                    sx={{width: 175}}
-                    fullWidth
-                    variant='contained' 
-                    onClick={() => addToScript1(selectedOpcode)}
-                    disabled={selectedOpcode === null}  
-                >
-                    First
-                </Button>
-                <Button 
-                    sx={{width: 175}}
-                    variant='contained'
-                    onClick={() => addToScript2(selectedOpcode)}
-                    disabled={selectedOpcode === null}  
-                >
-                    Second
-                </Button>
-            </ButtonGroup>
+            <Button
+                fullWidth
+                variant='contained' 
+                onClick={() => addToScript(selectedOpcode)}
+                disabled={selectedOpcode === null}  
+            >
+                Add to Script
+            </Button>
             <List sx={{width: '100%'}}>
                 {categories.map(category => 
                     <CategoryList 
@@ -161,16 +153,107 @@ function OpcodeList({showDisabled, showHex, scriptOpcodes1, setScriptOpcodes1, s
                         icon={category.icon}
                         opcodes={category.opcodes}
                         showHex={showHex}
-                        scriptOpcodes1={scriptOpcodes1}
-                        addToScript1={addToScript1}
-                        scriptOpcodes2={scriptOpcodes2}
-                        addToScript2={addToScript2}  
+                        addToScript={addToScript}
                     />
                 )}
             </List>
         </Box>
     );
 }
+
+
+function ValueList({script, setScript}) {
+    const [valueInput, setValueInput] = React.useState('');
+    
+    const addToScript = (opcode) => {
+        const newScript = [...script, opcode];
+        setScript(newScript);
+    };
+    
+    return (
+        <Box>
+            <h3>Values</h3>
+            <TextField 
+                fullWidth
+                value={valueInput}
+                onChange={(event) => setValueInput(event.target.value)}
+            />
+            <Button
+                fullWidth
+                variant='contained' 
+                onClick={() => addToScript(value(valueInput))}
+                disabled={ valueInput === '' }  
+            >
+                Add to Script
+            </Button>
+        </Box>
+    );
+}
+
+
+function SelectInputScript({inputScriptLabel, setInputScriptLabel}) {
+    
+    const handleChange = (event, newInputScriptLabel) => {
+        if (newInputScriptLabel !== null) {
+            setInputScriptLabel(newInputScriptLabel);
+        }        
+    };
+
+    return (
+        <Box>
+            <Stack direction='row' alignItems='center' spacing={2}>
+                <h3>Script to input data: </h3>
+                <ToggleButtonGroup
+                    color='primary'
+                    value={inputScriptLabel}
+                    exclusive
+                    onChange={handleChange}
+                    aria-label='Input Script'
+                >
+                    <ToggleButton value='Lock'>
+                        Lock <Lock />
+                    </ToggleButton>
+                    <ToggleButton value='Key'>
+                        Key <Key />
+                    </ToggleButton>
+                </ToggleButtonGroup>
+            </Stack>
+        </Box>
+    );
+}
+
+
+function DataEntry({showDisabled, showHex, scriptOpcodes1, setScriptOpcodes1, scriptOpcodes2, setScriptOpcodes2}) {
+    const [inputScriptLabel, setInputScriptLabel] = React.useState("Lock");
+
+    let script;
+    let setScript;
+    if (inputScriptLabel == "Lock") {
+        script = scriptOpcodes1;
+        setScript = setScriptOpcodes1;
+    } else if (inputScriptLabel == "Key") {
+        script = scriptOpcodes2;
+        setScript = setScriptOpcodes2
+    } else {
+        console.log('Invalid Script Input: ' + inputScriptLabel);
+    }
+
+    return (
+        <Box width='33%'>
+            <h2>Data Entry</h2>
+            <SelectInputScript inputScriptLabel={inputScriptLabel} setInputScriptLabel={setInputScriptLabel} />
+            <ValueList script={script} setScript={setScript} />
+            <OpcodeList 
+                showDisabled={showDisabled}
+                showHex={showHex}
+
+                script={script}
+                setScript={setScript}
+            />
+        </Box>
+    );
+}
+
 
 function ScriptList({showPrefix, showHex, title, scriptOpcodes, setScriptOpcodes}) {
     console.log(scriptOpcodes);
@@ -208,15 +291,10 @@ function ScriptList({showPrefix, showHex, title, scriptOpcodes, setScriptOpcodes
     );
 }
 
-export default function Create() {
-    const [showDisabled, setShowDisabled] = React.useState(true);
-    const [showPrefix, setShowPrefix] = React.useState(true);
-    const [showHex, setShowHex] = React.useState(true);
 
-    const [scriptOpcodes1, setScriptOpcodes1] = React.useState([]);
-    const [scriptOpcodes2, setScriptOpcodes2] = React.useState([]);
+function SelectScriptType({scriptOpcodes1, setScriptOpcodes1, scriptOpcodes2, setScriptOpcodes2}) {
 
-    const chooseScriptType = (e) => {
+    function setScripts(e) {
         e.preventDefault();
         let scriptType = e.target.value;
 
@@ -254,28 +332,44 @@ export default function Create() {
     };
 
     return (
+        <FormControl sx={{ m: 1, minWidth: 120 }}>
+            <InputLabel htmlFor="script-select">Script Type</InputLabel>
+            <Select defaultValue="2S" id="script-select" label="Script Type" onChange={(e) => setScripts(e)}>
+                <ListSubheader>Standard Scripts</ListSubheader>
+                <MenuItem value="P2PK">Pay to PubKey (P2PK)</MenuItem>
+                <MenuItem value="P2PKH">Pay to Pubkey Hash (P2PKH)</MenuItem>
+                <MenuItem value="P2MS">Multisig (P2MS)</MenuItem>
+                <MenuItem value="P2SH">Pay to Script Hash (P2SH)</MenuItem>
+
+                <ListSubheader>Non-standard Scripts</ListSubheader>
+                <MenuItem value="2S">Double Script</MenuItem>
+                <MenuItem disabled value="1S">Single Script</MenuItem>
+            </Select>
+        </FormControl>
+    );
+}
+
+
+export default function Create() {
+    const [showDisabled, setShowDisabled] = React.useState(true);
+    const [showPrefix, setShowPrefix] = React.useState(true);
+    const [showHex, setShowHex] = React.useState(true);
+
+    const [scriptOpcodes1, setScriptOpcodes1] = React.useState([]);
+    const [scriptOpcodes2, setScriptOpcodes2] = React.useState([]);
+
+    return (
         <>
             <h1 id='create' style={{paddingTop:'45px'}}>Create</h1>
-
-            <FormControl sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel htmlFor="script-select">Script Type</InputLabel>
-                <Select defaultValue="2S" id="script-select" label="Script Type" onChange={chooseScriptType}>
-                    <ListSubheader>Standard Scripts</ListSubheader>
-                    <MenuItem value="P2PK">Pay to PubKey (P2PK)</MenuItem>
-                    <MenuItem value="P2PKH">Pay to Pubkey Hash (P2PKH)</MenuItem>
-                    <MenuItem value="P2MS">Multisig (P2MS)</MenuItem>
-                    <MenuItem value="P2SH">Pay to Script Hash (P2SH)</MenuItem>
-
-                    <ListSubheader>Non-standard Scripts</ListSubheader>
-                    <MenuItem value="2S">Double Script</MenuItem>
-                    <MenuItem value="1S">Single Script</MenuItem>
-                </Select>
-            </FormControl>
-
-            <Settings 
+            <ScriptSettings 
                 setShowDisabled={setShowDisabled}
                 setShowPrefix={setShowPrefix}
                 setShowHex={setShowHex}
+
+                scriptOpcodes1={scriptOpcodes1} 
+                setScriptOpcodes1={setScriptOpcodes1}
+                scriptOpcodes2={scriptOpcodes2}
+                setScriptOpcodes2={setScriptOpcodes2}
             />
 
             <Stack direction='row' alignItems='flex-start' justifyContent='center'>
@@ -295,9 +389,8 @@ export default function Create() {
                     scriptOpcodes={scriptOpcodes2} 
                     setScriptOpcodes={setScriptOpcodes2}
                 />
-                <OpcodeList 
+                <DataEntry 
                     showDisabled={showDisabled}
-                    showPrefix={showPrefix}
                     showHex={showHex}
 
                     scriptOpcodes1={scriptOpcodes1} 

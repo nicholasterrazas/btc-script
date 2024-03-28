@@ -2,7 +2,7 @@ import * as React from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import { OPCODES, P2MS, P2PK, P2PKH, RETURN, value } from './Opcodes';
-import { Autocomplete, Box, Button, ButtonGroup, Collapse, Divider, FormControl, FormControlLabel, IconButton, InputLabel, ListItemButton, ListItemIcon, ListItemText, ListSubheader, MenuItem, Select, Stack, Switch, TextField, } from '@mui/material';
+import { Autocomplete, Box, Button, ButtonGroup, Collapse, Divider, FormControl, FormControlLabel, IconButton, InputLabel, ListItemButton, ListItemIcon, ListItemText, ListSubheader, MenuItem, Select, Stack, Switch, TextField, ToggleButton, ToggleButtonGroup, } from '@mui/material';
 import {Abc, AccountTree, Calculate, Clear, ExpandLess, ExpandMore, FormatQuote, Key, Layers, Lock, LockClock, LooksOne, LooksTwo, Password, Timer10, Timer10SelectSharp} from '@mui/icons-material/';
 
 
@@ -43,7 +43,7 @@ function Settings({setShowDisabled, setShowPrefix, setShowHex}) {
 
 }
 
-function CategoryList({category, icon, opcodes, showHex, addToScript1, addToScript2}) {
+function CategoryList({category, icon, opcodes, showHex, addToScript}) {
     const [open, setOpen] = React.useState(false);
     
     const handleClick = () => {
@@ -64,22 +64,13 @@ function CategoryList({category, icon, opcodes, showHex, addToScript1, addToScri
             <Divider />
             <List>
                 {opcodes.map(op => (
-                    <ListItem 
+                    <ListItemButton
                         key={`${op.label}`} 
                         style={{color: op.disabled && '#ef5350'}}
+                        onClick={() => addToScript(op)}
                     >
                         <ListItemText primary={`${op.label}`} secondary={showHex && `${op.hex}`} />
-                        <ListItemIcon>
-                            <IconButton onClick={() => addToScript1(op)}>
-                                <Lock />
-                            </IconButton>
-                        </ListItemIcon>
-                        <ListItemIcon>
-                            <IconButton onClick={() => addToScript2(op)}>
-                                <Key />
-                            </IconButton>
-                        </ListItemIcon>                   
-                    </ListItem> 
+                    </ListItemButton> 
                 ))}
             </List>
             <Divider />
@@ -89,7 +80,7 @@ function CategoryList({category, icon, opcodes, showHex, addToScript1, addToScri
 }
 
 
-function OpcodeList({showDisabled, showHex, scriptOpcodes1, setScriptOpcodes1, scriptOpcodes2, setScriptOpcodes2}) {    
+function OpcodeList({showDisabled, showHex, script, setScript}) {    
     const [selectedOpcode, setSelectedOpcode] = React.useState(null);
 
     // use either all opcodes, or only opcodes that are not disabled 
@@ -113,14 +104,9 @@ function OpcodeList({showDisabled, showHex, scriptOpcodes1, setScriptOpcodes1, s
         }
     ));
 
-    const addToScript1 = (opcode) => {
-        const newScriptOpcodes = [...scriptOpcodes1, opcode];
-        setScriptOpcodes1(newScriptOpcodes);
-    };
-
-    const addToScript2 = (opcode) => {
-        const newScriptOpcodes = [...scriptOpcodes2, opcode];
-        setScriptOpcodes2(newScriptOpcodes);
+    const addToScript = (opcode) => {
+        const newScript = [...script, opcode];
+        setScript(newScript);
     };
 
     return (
@@ -131,28 +117,17 @@ function OpcodeList({showDisabled, showHex, scriptOpcodes1, setScriptOpcodes1, s
                 disablePortal
                 id='opcode-autocomplete'
                 options={ops}
-                sx={{width: 350}}
                 renderInput={(params) => <TextField {...params} label="Search Opcode" />}
                 onChange={(event, value) => setSelectedOpcode(value)}
             />
-            <ButtonGroup>
-                <Button
-                    sx={{width: 175}}
-                    variant='contained' 
-                    onClick={() => addToScript1(selectedOpcode)}
-                    disabled={selectedOpcode === null}  
-                >
-                    First
-                </Button>
-                <Button 
-                    sx={{width: 175}}
-                    variant='contained'
-                    onClick={() => addToScript2(selectedOpcode)}
-                    disabled={selectedOpcode === null}  
-                >
-                    Second
-                </Button>
-            </ButtonGroup>
+            <Button
+                fullWidth
+                variant='contained' 
+                onClick={() => addToScript(selectedOpcode)}
+                disabled={selectedOpcode === null}  
+            >
+                Add to Script
+            </Button>
             <List sx={{width: '100%'}}>
                 {categories.map(category => 
                     <CategoryList 
@@ -160,10 +135,7 @@ function OpcodeList({showDisabled, showHex, scriptOpcodes1, setScriptOpcodes1, s
                         icon={category.icon}
                         opcodes={category.opcodes}
                         showHex={showHex}
-                        scriptOpcodes1={scriptOpcodes1}
-                        addToScript1={addToScript1}
-                        scriptOpcodes2={scriptOpcodes2}
-                        addToScript2={addToScript2}  
+                        addToScript={addToScript}
                     />
                 )}
             </List>
@@ -172,71 +144,91 @@ function OpcodeList({showDisabled, showHex, scriptOpcodes1, setScriptOpcodes1, s
 }
 
 
-
-function ValueList({scriptOpcodes1, setScriptOpcodes1, scriptOpcodes2, setScriptOpcodes2}) {
+function ValueList({script, setScript}) {
     const [valueInput, setValueInput] = React.useState('');
     
-    const addToScript1 = (opcode) => {
-        const newScriptOpcodes = [...scriptOpcodes1, opcode];
-        setScriptOpcodes1(newScriptOpcodes);
+    const addToScript = (opcode) => {
+        const newScript = [...script, opcode];
+        setScript(newScript);
     };
-
-    const addToScript2 = (opcode) => {
-        const newScriptOpcodes = [...scriptOpcodes2, opcode];
-        setScriptOpcodes2(newScriptOpcodes);
-    };
-    
     
     return (
         <Box>
             <h3>Values</h3>
             <TextField 
-                sx={{width: 350}}
+                fullWidth
                 value={valueInput}
                 onChange={(event) => setValueInput(event.target.value)}
             />
-            <ButtonGroup>
-                <Button
-                    sx={{width: 175}}
-                    variant='contained' 
-                    onClick={() => addToScript1(value(valueInput))}
-                    disabled={ valueInput === '' }  
-                >
-                    First
-                </Button>
-                <Button 
-                    sx={{width: 175}}
-                    variant='contained'
-                    onClick={() => addToScript2((value(valueInput)))}
-                    disabled={ valueInput === '' }  
-                >
-                    Second
-                </Button>
-            </ButtonGroup>
+            <Button
+                fullWidth
+                variant='contained' 
+                onClick={() => addToScript(value(valueInput))}
+                disabled={ valueInput === '' }  
+            >
+                Add to Script
+            </Button>
+        </Box>
+    );
+}
+
+
+function SelectInputScript({inputScriptLabel, setInputScriptLabel}) {
+    
+    const handleChange = (event, newInputScriptLabel) => {
+        if (newInputScriptLabel !== null) {
+            setInputScriptLabel(newInputScriptLabel);
+        }        
+    };
+
+    return (
+        <Box>
+            <h3>Add to {inputScriptLabel} Script</h3>
+            <ToggleButtonGroup
+                color='primary'
+                value={inputScriptLabel}
+                exclusive
+                onChange={handleChange}
+                aria-label='Input Script'
+            >
+                <ToggleButton value='Lock'>
+                    <Lock />
+                </ToggleButton>
+                <ToggleButton value='Key'>
+                    <Key />
+                </ToggleButton>
+            </ToggleButtonGroup>
         </Box>
     );
 }
 
 
 function DataEntry({showDisabled, showHex, scriptOpcodes1, setScriptOpcodes1, scriptOpcodes2, setScriptOpcodes2}) {
+    const [inputScriptLabel, setInputScriptLabel] = React.useState("Lock");
+
+    let script;
+    let setScript;
+    if (inputScriptLabel == "Lock") {
+        script = scriptOpcodes1;
+        setScript = setScriptOpcodes1;
+    } else if (inputScriptLabel == "Key") {
+        script = scriptOpcodes2;
+        setScript = setScriptOpcodes2
+    } else {
+        console.log('Invalid Script Input: ' + inputScriptLabel);
+    }
 
     return (
         <Box width='33%'>
-            <h2>Data Entry</h2>
-            <ValueList 
-                scriptOpcodes1={scriptOpcodes1}
-                setScriptOpcodes1={setScriptOpcodes1}
-                scriptOpcodes2={scriptOpcodes2}
-                setScriptOpcodes2={setScriptOpcodes2}
-            />
+            <h2>Script Data Entry</h2>
+            <SelectInputScript inputScriptLabel={inputScriptLabel} setInputScriptLabel={setInputScriptLabel} />
+            <ValueList script={script} setScript={setScript} />
             <OpcodeList 
                 showDisabled={showDisabled}
                 showHex={showHex}
 
-                scriptOpcodes1={scriptOpcodes1}
-                setScriptOpcodes1={setScriptOpcodes1}
-                scriptOpcodes2={scriptOpcodes2}
-                setScriptOpcodes2={setScriptOpcodes2}
+                script={script}
+                setScript={setScript}
             />
         </Box>
     );

@@ -271,15 +271,10 @@ function ScriptList({showPrefix, showHex, title, scriptOpcodes, setScriptOpcodes
     );
 }
 
-export default function Create() {
-    const [showDisabled, setShowDisabled] = React.useState(true);
-    const [showPrefix, setShowPrefix] = React.useState(true);
-    const [showHex, setShowHex] = React.useState(true);
 
-    const [scriptOpcodes1, setScriptOpcodes1] = React.useState([]);
-    const [scriptOpcodes2, setScriptOpcodes2] = React.useState([]);
+function SelectScriptType({scriptOpcodes1, setScriptOpcodes1, scriptOpcodes2, setScriptOpcodes2}) {
 
-    const chooseScriptType = (e) => {
+    function setScripts(e) {
         e.preventDefault();
         let scriptType = e.target.value;
 
@@ -317,24 +312,41 @@ export default function Create() {
     };
 
     return (
+        <FormControl sx={{ m: 1, minWidth: 120 }}>
+            <InputLabel htmlFor="script-select">Script Type</InputLabel>
+            <Select defaultValue="2S" id="script-select" label="Script Type" onChange={(e) => setScripts(e)}>
+                <ListSubheader>Standard Scripts</ListSubheader>
+                <MenuItem value="P2PK">Pay to PubKey (P2PK)</MenuItem>
+                <MenuItem value="P2PKH">Pay to Pubkey Hash (P2PKH)</MenuItem>
+                <MenuItem value="P2MS">Multisig (P2MS)</MenuItem>
+                <MenuItem value="P2SH">Pay to Script Hash (P2SH)</MenuItem>
+
+                <ListSubheader>Non-standard Scripts</ListSubheader>
+                <MenuItem value="2S">Double Script</MenuItem>
+                <MenuItem disabled value="1S">Single Script</MenuItem>
+            </Select>
+        </FormControl>
+    );
+}
+
+
+export default function Create() {
+    const [showDisabled, setShowDisabled] = React.useState(true);
+    const [showPrefix, setShowPrefix] = React.useState(true);
+    const [showHex, setShowHex] = React.useState(true);
+
+    const [scriptOpcodes1, setScriptOpcodes1] = React.useState([]);
+    const [scriptOpcodes2, setScriptOpcodes2] = React.useState([]);
+
+    return (
         <>
             <h1 id='create' style={{paddingTop:'45px'}}>Create</h1>
-
-            <FormControl sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel htmlFor="script-select">Script Type</InputLabel>
-                <Select defaultValue="2S" id="script-select" label="Script Type" onChange={chooseScriptType}>
-                    <ListSubheader>Standard Scripts</ListSubheader>
-                    <MenuItem value="P2PK">Pay to PubKey (P2PK)</MenuItem>
-                    <MenuItem value="P2PKH">Pay to Pubkey Hash (P2PKH)</MenuItem>
-                    <MenuItem value="P2MS">Multisig (P2MS)</MenuItem>
-                    <MenuItem value="P2SH">Pay to Script Hash (P2SH)</MenuItem>
-
-                    <ListSubheader>Non-standard Scripts</ListSubheader>
-                    <MenuItem value="2S">Double Script</MenuItem>
-                    <MenuItem value="1S">Single Script</MenuItem>
-                </Select>
-            </FormControl>
-
+            <SelectScriptType 
+                scriptOpcodes1={scriptOpcodes1} 
+                setScriptOpcodes1={setScriptOpcodes1}
+                scriptOpcodes2={scriptOpcodes2} 
+                setScriptOpcodes2={setScriptOpcodes2}                
+            />
             <Settings 
                 setShowDisabled={setShowDisabled}
                 setShowPrefix={setShowPrefix}

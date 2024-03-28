@@ -2,11 +2,11 @@ import * as React from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import { OPCODES, P2MS, P2PK, P2PKH, RETURN, value } from './Opcodes';
-import { Autocomplete, Box, Button, ButtonGroup, Collapse, Divider, FormControl, FormControlLabel, IconButton, InputLabel, ListItemButton, ListItemIcon, ListItemText, ListSubheader, MenuItem, Select, Stack, Switch, TextField, ToggleButton, ToggleButtonGroup, } from '@mui/material';
-import {Abc, AccountTree, Calculate, Clear, ExpandLess, ExpandMore, FormatQuote, Key, Layers, Lock, LockClock, LooksOne, LooksTwo, Password, Timer10, Timer10SelectSharp} from '@mui/icons-material/';
+import { Accordion, AccordionDetails, AccordionSummary, Autocomplete, Box, Button, Collapse, Divider, FormControl, FormControlLabel, Icon, IconButton, InputLabel, ListItemButton, ListItemIcon, ListItemText, ListSubheader, MenuItem, Select, Stack, Switch, TextField, ToggleButton, ToggleButtonGroup, } from '@mui/material';
+import {Abc, AccountTree, Calculate, Clear, ExpandLess, ExpandMore, FormatQuote, Key, Layers, Lock, LockClock, Password, Settings, Timer10SelectSharp} from '@mui/icons-material/';
 
 
-function Settings({setShowDisabled, setShowPrefix, setShowHex, scriptOpcodes1, setScriptOpcodes1, scriptOpcodes2, setScriptOpcodes2}) {
+function ScriptSettings({setShowDisabled, setShowPrefix, setShowHex, scriptOpcodes1, setScriptOpcodes1, scriptOpcodes2, setScriptOpcodes2}) {
     
     const toggleDisabledDisplay = () => {
         setShowDisabled((prevShowDisabled) => !prevShowDisabled);
@@ -22,29 +22,40 @@ function Settings({setShowDisabled, setShowPrefix, setShowHex, scriptOpcodes1, s
 
     return (
         <Box>
-            <h3>Settings</h3>
-            <Stack direction='row' alignItems='center'>
-                <SelectScriptType 
-                    scriptOpcodes1={scriptOpcodes1} 
-                    setScriptOpcodes1={setScriptOpcodes1}
-                    scriptOpcodes2={scriptOpcodes2} 
-                    setScriptOpcodes2={setScriptOpcodes2}
-                />
+            <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMore />}
+                    aria-controls='settings'
+                    id='settings-summary'
+                >
+                    <Settings />
+                    <b>Settings</b>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Stack direction='row' alignItems='center'>
+                        <SelectScriptType 
+                            scriptOpcodes1={scriptOpcodes1} 
+                            setScriptOpcodes1={setScriptOpcodes1}
+                            scriptOpcodes2={scriptOpcodes2} 
+                            setScriptOpcodes2={setScriptOpcodes2}
+                        />
 
-                <FormControlLabel 
-                    control={<Switch defaultChecked onChange={toggleDisabledDisplay}/>} 
-                    label="Show disabled opcodes"
-                />
+                        <FormControlLabel 
+                            control={<Switch defaultChecked onChange={toggleDisabledDisplay}/>} 
+                            label="Show disabled opcodes"
+                        />
 
-                <FormControlLabel 
-                    control={<Switch defaultChecked onChange={togglePrefixDisplay}/>} 
-                    label="Show 'OP' prefix in script"
-                />
-                <FormControlLabel 
-                    control={<Switch defaultChecked onChange={toggleHexDisplay}/>} 
-                    label="Show hex equivalent"
-                />
-            </Stack>
+                        <FormControlLabel 
+                            control={<Switch defaultChecked onChange={togglePrefixDisplay}/>} 
+                            label="Show 'OP' prefix in script"
+                        />
+                        <FormControlLabel 
+                            control={<Switch defaultChecked onChange={toggleHexDisplay}/>} 
+                            label="Show hex equivalent"
+                        />
+                    </Stack>
+                </AccordionDetails>
+            </Accordion>
         </Box>
     )
 
@@ -190,21 +201,23 @@ function SelectInputScript({inputScriptLabel, setInputScriptLabel}) {
 
     return (
         <Box>
-            <h3>Add to {inputScriptLabel} Script</h3>
-            <ToggleButtonGroup
-                color='primary'
-                value={inputScriptLabel}
-                exclusive
-                onChange={handleChange}
-                aria-label='Input Script'
-            >
-                <ToggleButton value='Lock'>
-                    <Lock />
-                </ToggleButton>
-                <ToggleButton value='Key'>
-                    <Key />
-                </ToggleButton>
-            </ToggleButtonGroup>
+            <Stack direction='row' alignItems='center' spacing={2}>
+                <h3>Script to input data: </h3>
+                <ToggleButtonGroup
+                    color='primary'
+                    value={inputScriptLabel}
+                    exclusive
+                    onChange={handleChange}
+                    aria-label='Input Script'
+                >
+                    <ToggleButton value='Lock'>
+                        Lock <Lock />
+                    </ToggleButton>
+                    <ToggleButton value='Key'>
+                        Key <Key />
+                    </ToggleButton>
+                </ToggleButtonGroup>
+            </Stack>
         </Box>
     );
 }
@@ -227,7 +240,7 @@ function DataEntry({showDisabled, showHex, scriptOpcodes1, setScriptOpcodes1, sc
 
     return (
         <Box width='33%'>
-            <h2>Script Data Entry</h2>
+            <h2>Data Entry</h2>
             <SelectInputScript inputScriptLabel={inputScriptLabel} setInputScriptLabel={setInputScriptLabel} />
             <ValueList script={script} setScript={setScript} />
             <OpcodeList 
@@ -348,7 +361,7 @@ export default function Create() {
     return (
         <>
             <h1 id='create' style={{paddingTop:'45px'}}>Create</h1>
-            <Settings 
+            <ScriptSettings 
                 setShowDisabled={setShowDisabled}
                 setShowPrefix={setShowPrefix}
                 setShowHex={setShowHex}

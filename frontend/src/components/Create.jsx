@@ -2,7 +2,7 @@ import * as React from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import { OPCODES, P2MS, P2PK, P2PKH, RETURN, value } from './Opcodes';
-import { Accordion, AccordionDetails, AccordionSummary, Autocomplete, Box, Button, Collapse, Divider, FormControl, FormControlLabel, Icon, IconButton, InputLabel, ListItemButton, ListItemIcon, ListItemText, ListSubheader, MenuItem, Select, Stack, Switch, TextField, ToggleButton, ToggleButtonGroup, } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Autocomplete, Box, Button, Collapse, Divider, FormControl, FormControlLabel, Icon, IconButton, InputLabel, ListItemButton, ListItemIcon, ListItemText, ListSubheader, MenuItem, Select, Stack, Switch, TextField, ToggleButton, ToggleButtonGroup, Tooltip, } from '@mui/material';
 import {Abc, AccountTree, Calculate, Clear, ExpandLess, ExpandMore, FormatQuote, Key, Layers, Lock, LockClock, Password, Settings, Timer10SelectSharp} from '@mui/icons-material/';
 
 
@@ -22,7 +22,7 @@ function ScriptSettings({setShowDisabled, setShowPrefix, setShowHex, scriptOpcod
 
     return (
         <Box>
-            <Accordion>
+            <Accordion defaultExpanded>
                 <AccordionSummary
                     expandIcon={<ExpandMore />}
                     aria-controls='settings'
@@ -129,34 +129,45 @@ function OpcodeList({showDisabled, showHex, script, setScript}) {
 
     return (
         <Box>
-            <h3>Opcodes</h3>
-            
-            <Autocomplete 
-                disablePortal
-                id='opcode-autocomplete'
-                options={ops}
-                renderInput={(params) => <TextField {...params} label="Search Opcode" />}
-                onChange={(event, value) => setSelectedOpcode(value)}
-            />
-            <Button
-                fullWidth
-                variant='contained' 
-                onClick={() => addToScript(selectedOpcode)}
-                disabled={selectedOpcode === null}  
-            >
-                Add to Script
-            </Button>
-            <List sx={{width: '100%'}}>
-                {categories.map(category => 
-                    <CategoryList 
-                        category={category.title}
-                        icon={category.icon}
-                        opcodes={category.opcodes}
-                        showHex={showHex}
-                        addToScript={addToScript}
+            <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMore />}
+                    aria-controls='opcodes'
+                    id='opcodes-summary'                
+                >
+                    <b>Opcodes</b>
+
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Autocomplete 
+                        disablePortal
+                        id='opcode-autocomplete'
+                        options={ops}
+                        renderInput={(params) => <TextField {...params} label="Search Opcode" />}
+                        onChange={(event, value) => setSelectedOpcode(value)}
                     />
-                )}
-            </List>
+                    <Button
+                        fullWidth
+                        variant='contained' 
+                        onClick={() => addToScript(selectedOpcode)}
+                        disabled={selectedOpcode === null}  
+                    >
+                        Add to Script
+                    </Button>
+                    <List sx={{width: '100%'}}>
+                        {categories.map(category => 
+                            <CategoryList 
+                                category={category.title}
+                                icon={category.icon}
+                                opcodes={category.opcodes}
+                                showHex={showHex}
+                                addToScript={addToScript}
+                            />
+                        )}
+                    </List>
+
+                </AccordionDetails>
+            </Accordion>            
         </Box>
     );
 }
@@ -172,20 +183,30 @@ function ValueList({script, setScript}) {
     
     return (
         <Box>
-            <h3>Values</h3>
-            <TextField 
-                fullWidth
-                value={valueInput}
-                onChange={(event) => setValueInput(event.target.value)}
-            />
-            <Button
-                fullWidth
-                variant='contained' 
-                onClick={() => addToScript(value(valueInput))}
-                disabled={ valueInput === '' }  
-            >
-                Add to Script
-            </Button>
+            <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMore />}
+                    aria-controls='settings'
+                    id='settings-summary'                
+                >
+                    <b>Values</b>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <TextField 
+                        fullWidth
+                        value={valueInput}
+                        onChange={(event) => setValueInput(event.target.value)}
+                    />
+                    <Button
+                        fullWidth
+                        variant='contained' 
+                        onClick={() => addToScript(value(valueInput))}
+                        disabled={ valueInput === '' }  
+                    >
+                        Add to Script
+                    </Button>
+                </AccordionDetails>
+            </Accordion>
         </Box>
     );
 }
@@ -202,7 +223,6 @@ function SelectInputScript({inputScriptLabel, setInputScriptLabel}) {
     return (
         <Box>
             <Stack direction='row' alignItems='center' spacing={2}>
-                <h3>Script to input data: </h3>
                 <ToggleButtonGroup
                     color='primary'
                     value={inputScriptLabel}
@@ -210,12 +230,16 @@ function SelectInputScript({inputScriptLabel, setInputScriptLabel}) {
                     onChange={handleChange}
                     aria-label='Input Script'
                 >
-                    <ToggleButton value='Lock'>
-                        Lock <Lock />
-                    </ToggleButton>
-                    <ToggleButton value='Key'>
-                        Key <Key />
-                    </ToggleButton>
+                    <Tooltip title="Enter data into Lock script">
+                        <ToggleButton value='Lock'>
+                            <Lock />
+                        </ToggleButton>
+                    </Tooltip>
+                    <Tooltip title="Enter data into Key script">
+                        <ToggleButton value='Key'>
+                            <Key />
+                        </ToggleButton>
+                    </Tooltip>
                 </ToggleButtonGroup>
             </Stack>
         </Box>
@@ -242,14 +266,9 @@ function DataEntry({showDisabled, showHex, scriptOpcodes1, setScriptOpcodes1, sc
         <Box width='33%'>
             <h2>Data Entry</h2>
             <SelectInputScript inputScriptLabel={inputScriptLabel} setInputScriptLabel={setInputScriptLabel} />
+            <br />
             <ValueList script={script} setScript={setScript} />
-            <OpcodeList 
-                showDisabled={showDisabled}
-                showHex={showHex}
-
-                script={script}
-                setScript={setScript}
-            />
+            <OpcodeList showDisabled={showDisabled} showHex={showHex} script={script} setScript={setScript} />
         </Box>
     );
 }

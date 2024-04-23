@@ -4,7 +4,19 @@ from simulator import construct_script, simulate_script, print_simulation
 
 
 app = FastAPI()
-app.add_middleware(CORSMiddleware)
+
+origins = [
+    "http://localhost",
+    "https://localhost",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get('/')

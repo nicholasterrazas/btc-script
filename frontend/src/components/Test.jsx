@@ -5,14 +5,16 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { ButtonGroup, IconButton, List, ListItem, ListItemButton, ListItemText, Stack, TextField, Tooltip } from '@mui/material';
-import { ArrowBackIos, AssignmentTurnedIn, AutoFixHigh, Code, EditNote, FirstPage, IntegrationInstructions, LastPage, NavigateBefore, NavigateNext, NoteAlt } from '@mui/icons-material';
+import { IconButton, List, ListItemButton, ListItemText, Stack, TextField, Tooltip } from '@mui/material';
+import { AssignmentTurnedIn, AutoFixHigh, FirstPage, IntegrationInstructions, LastPage, NavigateBefore, NavigateNext, NoteAlt } from '@mui/icons-material';
+import axios from 'axios';
+
+const API_ENDPOINT = 'http://localhost:8000';
+
 
 const steps = ['Choose Script', 'Simulate Script', 'Assess Script'];
 
-function Choose({setActiveStep}) {
-    const [script, setScript] = React.useState('');
-
+function Choose({setActiveStep, script, setScript, simulateScript}) {
     const scriptEmpty = (script === '');
 
     const scriptEditorNavigation = (
@@ -30,7 +32,7 @@ function Choose({setActiveStep}) {
     );
 
     const handleSimulateScript = () => {
-        setActiveStep(1);
+        simulateScript(script);
     };
 
     return (
@@ -42,6 +44,7 @@ function Choose({setActiveStep}) {
                     sx={{ width: '500px' }}
                     multiline
                     onChange={(event) => setScript(event.target.value)}
+                    value={script}
                 />
                 {scriptEditorNavigation}
             </Stack>
@@ -49,7 +52,7 @@ function Choose({setActiveStep}) {
             <Button 
                 variant='contained' 
                 disabled={scriptEmpty} 
-                endIcon={<IntegrationInstructions htmlColor={!scriptEmpty && 'gold'}/>}
+                endIcon={<IntegrationInstructions htmlColor={!scriptEmpty ? 'gold' : undefined}/>}
                 onClick={handleSimulateScript}
             >
                 Simulate Script
@@ -65,11 +68,11 @@ function ScriptStack({stack, title}) {
             <h3>{title}</h3>
             <List sx={{border: 1, borderRadius: 2}}>
                 {(stack.length >= 1) ? (stack.map((op, idx) => (
-                    <ListItemButton key={idx} disablePadding>
-                        <ListItemText primary={op} />
+                    <ListItemButton key={idx} >
+                        <ListItemText primary={op.value} />
                     </ListItemButton>
                 ))) : (
-                    <ListItemButton key={0} disablePadding>
+                    <ListItemButton key={0} >
                         <ListItemText primary="EMPTY" />
                     </ListItemButton>
                 )}
@@ -264,33 +267,45 @@ function LinearStepper({activeStep, setActiveStep}) {
     );
 }
 
-const fakeSimulation = {
-    steps: [
-        {script: [1, 1, 'OP_ADD'],  stack: [],      message: 'Initial setup', failed: false},
-        {script: [1, 'OP_ADD'],     stack: [1],     message: 'Pushed <1> to stack', failed: false},
-        {script: ['OP_ADD'],        stack: [1, 1],  message: 'Pushed <1> to stack', failed: false},
-        {script: [],                stack: [2],     message: 'Performed ADD on <1> and <1>; Pushed <2> to stack', failed: false}
-    ],
-    valid: true
+
+function InvalidScript({script}) {
+    return (
+        <Box sx={{ width: '100%' }}>
+            {`Invalid Script! '${script}' `}
+        </Box>
+    );
 }
 
 
 export default function Test() {
     const [activeStep, setActiveStep] = React.useState(0);
-    const [simulation, setSimulation] = React.useState(fakeSimulation);
+    const [script, setScript] = React.useState('');
+    const [simulation, setSimulation] = React.useState(null);
 
+    
+    function simulateScript(script) {
+        axios.get(`${API_ENDPOINT}/simulate?script=${script}`)
+        .then(res => {
+            console.log(res);
+            setSimulation(res.data);
+            setActiveStep(1);
+        })
+        .catch(err => {
+            console.log(err);
+            setActiveStep(4);
+        })
+    }
 
 
     let screen;
     if (activeStep === 0) {
-        console.log('Choosing Script');
-        screen = <Choose setActiveStep={setActiveStep} />
+        screen = <Choose setActiveStep={setActiveStep} script={script} setScript={setScript} simulateScript={simulateScript}/>
     } else if (activeStep === 1) {
-        console.log('Simulating Script');
         screen = <Simulate simulationSteps={simulation.steps} setActiveStep={setActiveStep} />
     } else if (activeStep === 2) {
-        console.log('Assessing Script');
         screen = <Assess simulation={simulation} setActiveStep={setActiveStep} />
+    } else if (activeStep === 4) {
+        screen = <InvalidScript script={script} />
     } else {
         console.error('Step out of range: ' + activeStep);
         screen = null;

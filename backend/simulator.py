@@ -122,7 +122,7 @@ def stack_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp
     elif opcode == OP_DUP:
         first = stack[0]
         stack.insert(0, first)
-        msg += f"Pushed <{first}> to stack"
+        msg += f"Duplicated <{first}>, and pushed it to stack"
     elif opcode == OP_DROP:
         first = stack.pop(0)
         msg += f"Popped <{first}> from stack"
@@ -161,6 +161,46 @@ def stack_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp
         stack.insert(0, second)
         stack.insert(0, first)
         msg += f"Duplicated <{first}>, <{second}>, <{third}>, and pushed them to stack"
+    elif opcode == OP_IFDUP:
+        top = stack[0]
+        if bool(top) == True:
+            stack.insert(0, top)
+            msg += f"<{top}> is true; Duplicated <{top}>, and pushed it to stack"
+        else:
+            msg += f"<{top}> is false; Stack is left the same"
+    elif opcode == OP_NIP:
+        second = stack.pop(1)
+        msg += f"Popped <{second}> from stack"
+    elif opcode == OP_OVER:
+        second = stack[1]
+        stack.insert(0, second)
+        msg += f"Duplicated <{second}>, and pushed it to stack"
+    elif opcode == OP_PICK or opcode == OP_ROLL:
+        n = stack.pop(0)
+        if not (0 <= n < len(stack)):
+            msg += f"<{n}> out of bounds [0, {len(stack)}]"
+            return SimulationStep(script=script, stack=stack, message=msg, failed=True)
+        
+        x = stack[n]
+        if opcode == OP_ROLL:
+            stack.pop(n)
+            msg += f"Popped element at position {n}; "
+        else:
+            msg += f"Duplicated element at position {n}; "
+
+        stack.insert(0, x)
+        msg += f"Pushed <{x}> to stack"
+    elif opcode == OP_ROT:
+        third = stack.pop(2)
+        stack.insert(0, third)
+        msg += f"Moved <{third}> to top of stack"
+    elif opcode == OP_SWAP:
+        first, second = swap(0, 1, stack)
+        msg += f"Swapped <{first}> and <{second}>"
+    elif opcode == OP_TUCK:
+        top = stack[0]
+        stack.insert(2, top)
+        msg += f"Duplicated <{top}> and inserted it after the second element"
     else:
         msg = f"STACK OPERATION ERROR: (OPCODE: {opcode})"
         return SimulationStep(script=script, stack=stack, message=msg, failed=True)

@@ -68,17 +68,17 @@ OP_3DUP         = Opcode(value='OP_3DUP', category='stack', arg_count=3)
 OP_2OVER        = Opcode(value='OP_2OVER', category='stack', arg_count=4)
 OP_2ROT         = Opcode(value='OP_2ROT', category='stack', arg_count=6)
 OP_2SWAP        = Opcode(value='OP_2SWAP', category='stack', arg_count=4)
-OP_IFDUP        = Opcode(value='OP_IFDUP', category='stack')
+OP_IFDUP        = Opcode(value='OP_IFDUP', category='stack', arg_count=1)
 OP_DEPTH        = Opcode(value='OP_DEPTH', category='stack', arg_count=0)
 OP_DROP         = Opcode(value='OP_DROP', category='stack', arg_count=1)
 OP_DUP          = Opcode(value='OP_DUP', category='stack', arg_count=1)
-OP_NIP          = Opcode(value='OP_NIP', category='stack')
-OP_OVER         = Opcode(value='OP_OVER', category='stack')
-OP_PICK         = Opcode(value='OP_PICK', category='stack')
-OP_ROLL         = Opcode(value='OP_ROLL', category='stack')
-OP_ROT          = Opcode(value='OP_ROT', category='stack')
-OP_SWAP         = Opcode(value='OP_SWAP', category='stack')
-OP_TUCK         = Opcode(value='OP_TUCK', category='stack')
+OP_NIP          = Opcode(value='OP_NIP', category='stack', arg_count=2)
+OP_OVER         = Opcode(value='OP_OVER', category='stack', arg_count=2)
+OP_PICK         = Opcode(value='OP_PICK', category='stack', arg_count=2)
+OP_ROLL         = Opcode(value='OP_ROLL', category='stack', arg_count=2)
+OP_ROT          = Opcode(value='OP_ROT', category='stack', arg_count=3)
+OP_SWAP         = Opcode(value='OP_SWAP', category='stack', arg_count=2)
+OP_TUCK         = Opcode(value='OP_TUCK', category='stack', arg_count=2)
 
 # Splice
 OP_CAT          = Opcode(value='OP_CAT', category='splice', disabled=True)
@@ -294,15 +294,28 @@ STACK_OPS = [
     OP_2ROT,
     OP_2SWAP,
     OP_3DUP,
+    OP_IFDUP,
+    OP_NIP,
+    OP_OVER,
+    OP_PICK,
+    OP_ROLL,
+    OP_ROT,
+    OP_SWAP,
+    OP_TUCK,
 ]
 
 def str_to_op(s: str):
+    s = s.upper()
+
     if OPCODES.get(s) != None:
         return OPCODES[s]
 
-    match s:
-        case "SIGNATURE" | "PUBKEY": val = s
-        case _: val = int(s)
+    if s.startswith("SIG") or s.startswith("PUB"):
+        val = s
+    elif s.isdigit() or (len(s) > 1 and s[1:].isdigit()):
+        val = int(s)
+    else:
+        val = s
 
     return Data(value=val)
 

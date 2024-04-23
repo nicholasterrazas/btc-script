@@ -1,8 +1,10 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from simulator import construct_script, simulate_script, print_simulation
 
 
 app = FastAPI()
+app.add_middleware(CORSMiddleware)
 
 
 @app.get('/')

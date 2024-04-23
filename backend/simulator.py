@@ -3,8 +3,8 @@ from pydantic import BaseModel
 
 
 class SimulationStep(BaseModel):
-    script: list[ScriptOp]
-    stack: list[ScriptOp]
+    script: list[Opcode | Data]
+    stack: list[Opcode | Data]
     message: str | None = None
     failed: bool = False
 
@@ -28,7 +28,7 @@ def push_data(data: Data, script: list[ScriptOp], stack: list[ScriptOp]) -> Simu
 def unary_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
     operand = stack.pop(0).value
 
-    operation = opcode.label[3:]
+    operation = opcode.value[3:]
     msg = f"Performed {operation} on <{operand}>; "
 
     if opcode == OP_1ADD:
@@ -57,7 +57,7 @@ def binary_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptO
     op1 = stack.pop(0).value
     op2 = stack.pop(0).value
     
-    operation = opcode.label[3:]
+    operation = opcode.value[3:]
     msg = f"Performed {operation} on <{op1}> and <{op2}>; " 
 
     if opcode == OP_ADD:
@@ -113,7 +113,7 @@ def swap(idx1: int, idx2: int, stack: list[ScriptOp]) -> tuple[ScriptOp,ScriptOp
 
 
 def stack_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
-    operation = opcode.label[3:]
+    operation = opcode.value[3:]
     msg = f"Performed {operation}; " 
     
     if opcode == OP_DEPTH:
@@ -170,11 +170,11 @@ def stack_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp
 
 def process_opcode(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
     if opcode.disabled:
-        message = f"{opcode.label} is disabled"
+        message = f"{opcode.value} is disabled"
         return SimulationStep(script=script, stack=stack, message=message, failed=True)
     
     if not enough_args(opcode.arg_count, stack):
-        message = f"{opcode.label} requires {opcode.arg_count} arguments but was given {len(stack)}"
+        message = f"{opcode.value} requires {opcode.arg_count} arguments but was given {len(stack)}"
         return SimulationStep(script=script, stack=stack, message=message, failed=True)
 
 
@@ -188,7 +188,7 @@ def process_opcode(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp]
     else:
         # TODO: implement logic for each opcode
         stack.insert(0, opcode)
-        msg = f"Logic for {opcode.label} not implemented yet; {opcode.label} pushed to stack"
+        msg = f"Logic for {opcode.value} not implemented yet; {opcode.value} pushed to stack"
 
     return SimulationStep(script=script, stack=stack, message=msg)
 

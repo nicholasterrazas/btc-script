@@ -18,6 +18,22 @@ def enough_args(arg_count: int, stack: list[ScriptOp]) -> bool:
     return arg_count <= len(stack)
 
 
+def check_sig(signature: Data, pubkey: Data) -> bool:
+    
+    return True
+
+def check_multisig(signatures: list[Data], pubkeys: list[Data]) -> bool:
+    
+    return True
+
+
+def is_pubkey(pubkey: Data) -> bool:
+    return pubkey.value.startswith("PUB")
+
+def is_signature(signature: Data) -> bool:
+    return signature.value.startswith("SIG")
+
+
 def push_data(data: Data, script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
     stack.insert(0, data)
     message = f"Pushed <{data.value}> to stack"
@@ -208,6 +224,113 @@ def stack_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp
     return SimulationStep(script=script, stack=stack, message=msg)
 
 
+def signature_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
+    operation = opcode.value[3:]
+    msg = f"Performed {operation}; "
+
+
+    if opcode == OP_CHECKSIG or OP_CHECKSIGVERIFY:
+        pubkey = stack.pop(0)
+        signature = stack.pop(0)
+
+        if check_sig(signature, pubkey):
+            stack.insert(0, Data(value=1))
+            msg += f"Checksig on pubkey <{pubkey.value}> passed with signature <{signature.value}>; Pushed <1> to stack"
+        else:
+            stack.insert(0, Data(value=0))
+            msg += f"Checksig on pubkey <{pubkey.value}> failed with signature <{signature.value}>; Pushed <0> to stack"
+
+        if opcode == OP_CHECKSIGVERIFY:
+            if check_sig(signature, pubkey):
+                msg += "; Verify Passed"
+            else:
+                msg += "; Verify Failed"
+                return SimulationStep(script=script, stack=stack, message=msg, failed=True)
+
+        return SimulationStep(script=script, stack=stack, message=msg)
+
+
+    elif opcode == OP_CHECKMULTISIG or opcode == OP_CHECKMULTISIGVERIFY:
+        num_pubkeys = stack.pop(0)
+        if num_pubkeys >= len(stack):
+            msg += f"Too many pubkeys required, number of necessary pubkeys specified: <{num_pubkeys}>, stack size: <{len(stack)}>; Checkmultisig failed"
+            return SimulationStep(script=script, stack=stack, message=msg, failed=True)
+                    
+        pubkeys = []
+        for _ in range(num_pubkeys):
+            pubkey = stack.pop(0)
+            if not is_pubkey(pubkey):
+                msg += f"Not enough pubkeys, needed <{num_pubkeys}>, received <{len(pubkeys)}>; Checkmultisig failed"
+                return SimulationStep(script=script, stack=stack, message=msg, failed=True)
+            
+            pubkeys.append(pubkey)
+
+        num_signatures = stack.pop(0)
+        if num_signatures >= len(stack):
+            msg += f"Too many signatures required, number of necessary signatures specified: <{num_pubkeys}>, stack size: <{len(stack)}>; Checkmultisig failed"
+            return SimulationStep(script=script, stack=stack, message=msg, failed=True)
+
+        signatures = []
+        for _ in range(num_signatures):
+            signature = stack.pop(0)
+            if not is_signature(signature):
+                msg += f"Not enough signatures, needed <{num_signatures}>, received <{len(signatures)}>; Checkmultisig failed"
+                return SimulationStep(script=script, stack=stack, message=msg, failed=True)
+
+
+        if check_multisig(pubkeys, signatures):
+            stack.insert(0, Data(value=1))
+            msg += f"Checkmultisig passed; Pushed <1> to stack"
+        else:
+            stack.insert(0, Data(value=0))
+            msg += f"Checkmultisig failed; Pushed <0> to stack"
+
+        if opcode == OP_CHECKMULTISIGVERIFY:
+            if check_multisig(pubkeys, signatures):
+                msg += "; Verify Passed"
+            else:
+                msg += "; Verify Failed"
+                return SimulationStep(script=script, stack=stack, message=msg, failed=True)
+        
+        return SimulationStep(script=script, stack=stack, message=msg)
+    
+    else:
+        msg = f"EQUALITY OPERATION ERROR: (OPCODE: {opcode})"
+        return SimulationStep(script=script, stack=stack, message=msg, failed=True)
+
+
+def equality_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
+    operation = opcode.value[3:]
+    msg = f"Performed {operation}; "
+
+    if opcode == OP_EQUAL:
+        first, second = stack[0], stack[1]
+        if first == second:
+            stack.insert(0, Data(value=1))  # insert 1 if it is not equal
+            msg += f"<{first}> is equal to <{second}>; Pushed <1> to stack"
+        else:
+            stack.insert(0, Data(value=0))  # insert 0 if it is not equal
+            msg += f"<{first}> is not equal to <{second}>; Pushed <0> to stack"
+
+        return SimulationStep(script=script, stack=stack, message=msg)
+
+    elif opcode == OP_EQUALVERIFY:
+        first, second = stack[0], stack[1]
+        if first == second:
+            stack.insert(0, Data(value=1))  # insert 1 if it is not equal
+            msg += f"<{first}> is equal to <{second}>; Pushed <1> to stack; Verify Passed"
+            return SimulationStep(script=script, stack=stack, message=msg)
+        else:
+            stack.insert(0, Data(value=0))  # insert 0 if it is not equal
+            msg += f"<{first}> is not equal to <{second}>; Pushed <0> to stack; Verify Failed"
+            return SimulationStep(script=script, stack=stack, message=msg, failed=True)
+
+    else: 
+        msg = f"EQUALITY OPERATION ERROR: (OPCODE: {opcode})"
+        return SimulationStep(script=script, stack=stack, message=msg, failed=True)
+
+
+
 def process_opcode(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
     if opcode.disabled:
         message = f"{opcode.value} is disabled"
@@ -224,6 +347,22 @@ def process_opcode(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp]
         return binary_operation(opcode, script, stack)
     elif opcode in STACK_OPS:   
         return stack_operation(opcode, script, stack)
+    elif opcode in SIGNATURE_OPS:
+        return signature_operation(opcode, script, stack)
+    elif opcode in EQUALITY_OPS:
+        return equality_operation(opcode, script, stack)
+    elif opcode == OP_WITHIN:
+        hi = stack.pop(0)
+        lo = stack.pop(0)
+        x = stack.pop(0)
+        if lo <= x < hi:
+            stack.insert(0, Data(value=1))  # insert 1 if it is in range
+            msg = f"<{x}> is within range [{lo}, {hi}); Pushed <1> to stack"
+        else :
+            stack.insert(0, Data(value=0))  # insert 0 if it is out of range
+            msg = f"<{x}> is NOT within range [{lo}, {hi}); Pushed <0> to stack"
+
+        return SimulationStep(script=script, stack=stack, message=msg)
 
     else:
         # TODO: implement logic for each opcode

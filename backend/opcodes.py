@@ -92,8 +92,8 @@ OP_INVERT       = Opcode(value='OP_INVERT', category='bitwise logic', disabled=T
 OP_AND          = Opcode(value='OP_AND', category='bitwise logic', disabled=True)
 OP_OR           = Opcode(value='OP_OR', category='bitwise logic', disabled=True)
 OP_XOR          = Opcode(value='OP_XOR', category='bitwise logic', disabled=True)
-OP_EQUAL        = Opcode(value='OP_EQUAL', category='bitwise logic')
-OP_EQUALVERIFY  = Opcode(value='OP_EQUALVERIFY', category='bitwise logic')
+OP_EQUAL        = Opcode(value='OP_EQUAL', category='bitwise logic', arg_count=2)
+OP_EQUALVERIFY  = Opcode(value='OP_EQUALVERIFY', category='bitwise logic', arg_count=2)
 
 # Arithmetic
 OP_RESERVED1            = Opcode(value='OP_RESERVED1', category='arithmetic')
@@ -302,6 +302,20 @@ STACK_OPS = [
     OP_ROT,
     OP_SWAP,
     OP_TUCK,
+]
+
+# Opcodes that deal with pubkeys and signatures
+SIGNATURE_OPS = [
+    OP_CHECKSIG,
+    OP_CHECKSIGVERIFY,
+    OP_CHECKMULTISIG,
+    OP_CHECKMULTISIGVERIFY,
+]
+
+# Opcodes that deal with equality
+EQUALITY_OPS = [
+    OP_EQUAL,
+    OP_EQUALVERIFY
 ]
 
 def str_to_op(s: str):

@@ -19,16 +19,38 @@ def enough_args(arg_count: int, stack: list[ScriptOp]) -> bool:
 
 
 def check_sig(signature: Data, pubkey: Data) -> bool:
+    if not is_signature(signature) or not is_pubkey(pubkey):
+        return False
     
-    return True
+    if signature.value[3:] == pubkey.value[2:]:
+        return True
+    else:
+        return False
 
-def check_multisig(signatures: list[Data], pubkeys: list[Data]) -> bool:
+
+def check_multisig(signatures: list[Data], pubkeys: list[Data], sig_count: int, pk_count: int) -> bool:
+    for sig in signatures:
+        if not is_signature(sig):
+            return False
     
-    return True
+    for pk in pubkeys:
+        if not is_pubkey(pk):
+            return False
 
+    verified_pairs = []
+    for sig in signatures:
+        for pk in pubkeys:
+            if (sig, pk) not in verified_pairs and check_sig(sig, pk):
+                verified_pairs.append((sig, pk))
+
+    if len(verified_pairs) >= sig_count:
+        return True
+    else:
+        return False
+    
 
 def is_pubkey(pubkey: Data) -> bool:
-    return pubkey.value.startswith("PUB")
+    return pubkey.value.startswith("PK")
 
 def is_signature(signature: Data) -> bool:
     return signature.value.startswith("SIG")
@@ -266,7 +288,7 @@ def signature_operation(opcode: Opcode, script: list[ScriptOp], stack: list[Scri
             pubkeys.append(pubkey)
 
         num_signatures = stack.pop(0)
-        if num_signatures >= len(stack):
+        if num_signatures >= len(stack) or num_signatures > num_pubkeys:
             msg += f"Too many signatures required, number of necessary signatures specified: <{num_pubkeys}>, stack size: <{len(stack)}>; Checkmultisig failed"
             return SimulationStep(script=script, stack=stack, message=msg, failed=True)
 
@@ -277,8 +299,8 @@ def signature_operation(opcode: Opcode, script: list[ScriptOp], stack: list[Scri
                 msg += f"Not enough signatures, needed <{num_signatures}>, received <{len(signatures)}>; Checkmultisig failed"
                 return SimulationStep(script=script, stack=stack, message=msg, failed=True)
 
-
-        if check_multisig(pubkeys, signatures):
+        multisig_result = check_multisig(pubkeys, signatures, num_signatures, num_pubkeys)
+        if multisig_result:
             stack.insert(0, Data(value=1))
             msg += f"Checkmultisig passed; Pushed <1> to stack"
         else:
@@ -286,7 +308,7 @@ def signature_operation(opcode: Opcode, script: list[ScriptOp], stack: list[Scri
             msg += f"Checkmultisig failed; Pushed <0> to stack"
 
         if opcode == OP_CHECKMULTISIGVERIFY:
-            if check_multisig(pubkeys, signatures):
+            if multisig_result:
                 msg += "; Verify Passed"
             else:
                 msg += "; Verify Failed"

@@ -324,7 +324,7 @@ def str_to_op(s: str):
     if OPCODES.get(s) != None:
         return OPCODES[s]
 
-    if s.startswith("SIG") or s.startswith("PUB"):
+    if s.startswith("SIG") or s.startswith("PK"):
         val = s
     elif s.isdigit() or (len(s) > 1 and s[1:].isdigit()):
         val = int(s)

@@ -2,8 +2,8 @@ import * as React from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import { OPCODES, P2MS, P2PK, P2PKH, RETURN, value } from './Opcodes';
-import { Accordion, AccordionDetails, AccordionSummary, Autocomplete, Box, Button, Collapse, Divider, FormControl, FormControlLabel, Icon, IconButton, InputLabel, ListItemButton, ListItemIcon, ListItemText, ListSubheader, MenuItem, Select, Stack, Switch, TextField, ToggleButton, ToggleButtonGroup, Tooltip, } from '@mui/material';
-import {Abc, AccountTree, Calculate, Clear, ExpandLess, ExpandMore, FormatQuote, Key, Layers, Lock, LockClock, Password, Settings, Timer10SelectSharp} from '@mui/icons-material/';
+import { Accordion, AccordionDetails, AccordionSummary, Autocomplete, Box, Button, Collapse, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, Icon, IconButton, InputLabel, ListItemButton, ListItemIcon, ListItemText, ListSubheader, MenuItem, Select, Stack, Switch, TextField, ToggleButton, ToggleButtonGroup, Tooltip, } from '@mui/material';
+import {Abc, AccountTree, Calculate, Clear, Description, ExpandLess, ExpandMore, FormatQuote, Key, Layers, Lock, LockClock, Password, Settings, Timer10SelectSharp} from '@mui/icons-material/';
 
 
 function ScriptSettings({setShowDisabled, setShowPrefix, setShowHex, scriptOpcodes1, setScriptOpcodes1, scriptOpcodes2, setScriptOpcodes2}) {
@@ -61,6 +61,46 @@ function ScriptSettings({setShowDisabled, setShowPrefix, setShowHex, scriptOpcod
 
 }
 
+function OpcodeDescription({opcode, open, setOpen}) {
+    console.log(opcode);
+    if (opcode === null) {
+        return null;
+    }
+
+    const handleClose = () =>  {
+        setOpen(false);
+    };
+
+    const handleLearn = () => {
+        window.open("https://en.bitcoin.it/wiki/Script");
+        setOpen(false);
+    };
+
+    return (
+        <React.Fragment>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {opcode.label} Description
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        {opcode.description}
+                    </DialogContentText>
+                </DialogContent>
+            <DialogActions>
+                <Button onClick={handleLearn}>Learn more</Button>
+                <Button onClick={handleClose} autoFocus>Exit Description</Button>
+            </DialogActions>
+        </Dialog>
+      </React.Fragment>  
+    );
+}
+
 function CategoryList({category, icon, opcodes, showHex, addToScript}) {
     const [open, setOpen] = React.useState(false);
     
@@ -68,6 +108,23 @@ function CategoryList({category, icon, opcodes, showHex, addToScript}) {
         setOpen(!open);
     };
     
+
+    const [openDescription, setOpenDescription] = React.useState(false);
+    const [descriptionOpcode, setDescriptionOpcode] = React.useState(null);
+
+    let opcodeDescription = (     
+        <OpcodeDescription 
+            opcode={descriptionOpcode}
+            open={openDescription}
+            setOpen={setOpenDescription}
+        />
+    );
+
+    const handleOpenDescription = (opcode) => {
+        setDescriptionOpcode(opcode);
+        setOpenDescription(true);
+    }
+
     return (
         <>
             <ListItemButton onClick={handleClick} >
@@ -77,18 +134,31 @@ function CategoryList({category, icon, opcodes, showHex, addToScript}) {
                 <ListItemText primary={`${category}`} />
                 {open ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
+            {opcodeDescription}
         
             <Collapse in={open} timeout="auto" unmountOnExit>
             <Divider />
             <List>
                 {opcodes.map(op => (
-                    <ListItemButton
-                        key={`${op.label}`} 
-                        style={{color: op.disabled && '#ef5350'}}
-                        onClick={() => addToScript(op)}
+                    <ListItem
+                        key={`${op.label}`}
+                        secondaryAction={
+                            <Tooltip title="Opcode Description">
+                                <IconButton edge="end" aria-label="description" onClick={() => handleOpenDescription(op)}>
+                                    <Description />
+                                </IconButton>
+                            </Tooltip>
+                        }
+                        disablePadding
                     >
-                        <ListItemText primary={`${op.label}`} secondary={showHex && `${op.hex}`} />
-                    </ListItemButton> 
+                        <ListItemButton
+                            key={`${op.label}`} 
+                            style={{color: op.disabled && '#ef5350'}}
+                            onClick={() => addToScript(op)}
+                        >
+                            <ListItemText primary={`${op.label}`} secondary={showHex && `${op.hex}`} />
+                        </ListItemButton> 
+                    </ListItem>
                 ))}
             </List>
             <Divider />

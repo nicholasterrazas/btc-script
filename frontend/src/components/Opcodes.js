@@ -978,11 +978,12 @@ export function P2MS(signatures, pubkeys, numRequired) {
     let scriptPubkey = [
         opcode(`OP_${numRequired}`),
         ...hashedPubkeys,
-        opcode(`OP_${pubkeys.length}`)   
+        opcode(`OP_${pubkeys.length}`),
+        opcode("OP_CHECKMULTISIG")
     ];
 
     let scriptSig = [
-        opcode("OP_0"),
+        // opcode("OP_0"),
         ...signatures.map(sig => value(`${sig}`))
     ];
 

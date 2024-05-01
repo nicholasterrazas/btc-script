@@ -271,7 +271,8 @@ function LinearStepper({activeStep, setActiveStep}) {
 function InvalidScript({script}) {
     return (
         <Box sx={{ width: '100%' }}>
-            {`Invalid Script! '${script}' `}
+            <h2>Invalid Script!</h2>
+            <p>{`Script: '${script}' `}</p>
         </Box>
     );
 }
@@ -318,7 +319,7 @@ export default function Test() {
                 <Box minHeight={500}>
                     {screen}
                 </Box>   
-                <LinearStepper activeStep={activeStep} setActiveStep={setActiveStep}/>
+                {/* <LinearStepper activeStep={activeStep} setActiveStep={setActiveStep}/> */}
             </Stack>
         </>
     );

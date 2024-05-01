@@ -326,7 +326,7 @@ def equality_operation(opcode: Opcode, script: list[ScriptOp], stack: list[Scrip
     msg = f"Performed {operation}; "
 
     if opcode == OP_EQUAL:
-        first, second = stack[0], stack[1]
+        first, second = stack.pop(0), stack.pop(0)
         if first == second:
             stack.insert(0, Data(value=1))  # insert 1 if it is not equal
             msg += f"<{first}> is equal to <{second}>; Pushed <1> to stack"
@@ -337,7 +337,7 @@ def equality_operation(opcode: Opcode, script: list[ScriptOp], stack: list[Scrip
         return SimulationStep(script=script, stack=stack, message=msg)
 
     elif opcode == OP_EQUALVERIFY:
-        first, second = stack[0], stack[1]
+        first, second = stack.pop(0), stack.pop(0)
         if first == second:
             stack.insert(0, Data(value=1))  # insert 1 if it is not equal
             msg += f"<{first}> is equal to <{second}>; Pushed <1> to stack; Verify Passed"

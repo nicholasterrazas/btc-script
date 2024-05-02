@@ -373,6 +373,14 @@ def process_opcode(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp]
         return signature_operation(opcode, script, stack)
     elif opcode in EQUALITY_OPS:
         return equality_operation(opcode, script, stack)
+    elif opcode == OP_VERIFY:
+        top = stack.pop(0)
+
+        msg = f"Performed verify on {top}; Verify "
+        msg += "passed" if bool(top) else "failed"
+
+        return SimulationStep(script=script, stack=stack, message=msg, failed=bool(top))
+            
     elif opcode == OP_WITHIN:
         hi = stack.pop(0)
         lo = stack.pop(0)

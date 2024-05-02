@@ -268,12 +268,30 @@ function LinearStepper({activeStep, setActiveStep}) {
 }
 
 
-function InvalidScript({script}) {
+function InvalidScript({script, setActiveStep}) {
+    
+    
+    
+    const handleChooseScript = () => {
+        setActiveStep(0);
+    };
+
     return (
-        <Box sx={{ width: '100%' }}>
-            <h2>Invalid Script!</h2>
+        <Stack direction='column' justifyContent='center' alignItems='center' spacing={2}>
+            <h2>Error parsing script!</h2>
             <p>{`Script: '${script}' `}</p>
-        </Box>
+
+            <Stack minHeight={250} direction='row' justifyContent='center' alignItems='flex-start' spacing={2}>
+
+                <Button variant='outlined' onClick={handleChooseScript} endIcon={<NoteAlt />} >
+                    Adjust Script
+                </Button>
+
+                <Button variant='contained' href='/create' endIcon={<AutoFixHigh htmlColor={'gold'}/>} >
+                    Create Script
+                </Button>
+            </Stack>
+        </Stack>
     );
 }
 
@@ -306,7 +324,7 @@ export default function Test() {
     } else if (activeStep === 2) {
         screen = <Assess simulation={simulation} setActiveStep={setActiveStep} />
     } else if (activeStep === 4) {
-        screen = <InvalidScript script={script} />
+        screen = <InvalidScript script={script} setActiveStep={setActiveStep} />
     } else {
         console.error('Step out of range: ' + activeStep);
         screen = null;

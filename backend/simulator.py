@@ -50,9 +50,13 @@ def check_multisig(signatures: list[Data], pubkeys: list[Data], sig_count: int, 
     
 
 def is_pubkey(pubkey: Data) -> bool:
+    if type(pubkey.value) != str:
+        return False
     return pubkey.value.startswith("PK")
 
 def is_signature(signature: Data) -> bool:
+    if type(signature.value) != str:
+        return False
     return signature.value.startswith("SIG")
 
 
@@ -65,8 +69,12 @@ def push_data(data: Data, script: list[ScriptOp], stack: list[ScriptOp]) -> Simu
 
 def unary_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
     operand = stack.pop(0).value
-
     operation = opcode.value[3:]
+
+    if type(operand) != int:
+        msg = f"Failure trying to perform {operation} on {operand}; Requires type Int, but found String"
+        return SimulationStep(script=script, stack=stack, message=msg, failed=True)
+
     msg = f"Performed {operation} on <{operand}>; "
 
     if opcode == OP_1ADD:
@@ -94,8 +102,17 @@ def unary_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp
 def binary_operation(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp]) -> SimulationStep:
     op1 = stack.pop(0).value
     op2 = stack.pop(0).value
-    
     operation = opcode.value[3:]
+
+    if type(op1) != int or type(op2) != int:
+        msg = f"Failure trying to perform {operation} on {op1} and {op2};"
+
+        if type(op1) != int: msg += f" Operand 1 requires type Int, but found type String"
+        if type(op1) != int and type(op2) != int: msg += "; "
+        if type(op2) != int: msg += f" Operand 2 requires type Int, but found type String"
+
+        return SimulationStep(script=script, stack=stack, message=msg, failed=True)
+
     msg = f"Performed {operation} on <{op1}> and <{op2}>; " 
 
     if opcode == OP_ADD:
@@ -255,6 +272,15 @@ def signature_operation(opcode: Opcode, script: list[ScriptOp], stack: list[Scri
         pubkey = stack.pop(0)
         signature = stack.pop(0)
 
+        if type(pubkey.value) != str or type(signature.value) != str:
+            msg = f"Failure performing {operation};"
+
+            if type(pubkey.value) != str:  msg += f"Pubkey requires type String, but found type Int"
+            if type(pubkey.value) != str and type(signature.value): msg += "; "
+            if type(signature.value) != str: msg += f"Signature requires type String, but found type Int"
+            
+            return SimulationStep(script=script, stack=stack, message=msg, failed=True)
+
         if check_sig(signature, pubkey):
             stack.insert(0, Data(value=1))
             msg += f"Checksig on pubkey <{pubkey.value}> passed with signature <{signature.value}>; Pushed <1> to stack"
@@ -298,6 +324,15 @@ def signature_operation(opcode: Opcode, script: list[ScriptOp], stack: list[Scri
             if not is_signature(signature):
                 msg += f"Not enough signatures, needed <{num_signatures}>, received <{len(signatures)}>; Checkmultisig failed"
                 return SimulationStep(script=script, stack=stack, message=msg, failed=True)
+            
+            signatures.append(signature)
+            
+    
+        def is_str(x): return type(x) == str
+
+        if any([not is_str(data) for data in (pubkeys+signatures)]):
+            msg = f"Failure performing {operation}; Pubkeys and Signatures require type String, but found Int"
+            return SimulationStep(script=script, stack=stack, message=msg, failed=True)
 
         multisig_result = check_multisig(pubkeys, signatures, num_signatures, num_pubkeys)
         if multisig_result:
@@ -385,12 +420,28 @@ def process_opcode(opcode: Opcode, script: list[ScriptOp], stack: list[ScriptOp]
         hi = stack.pop(0)
         lo = stack.pop(0)
         x = stack.pop(0)
+
+        if (type(hi) != int) or (type(lo) != int) or (type(x) != int):
+            msg = f"Failed to perform WITHIN; "
+
+            if type(hi) != int: msg += f"High end of range requires type Int, but found type String"
+            
+            if type(hi) != int and type(lo) != int: msg += "; "
+            if type(lo) != int: msg += f"Low end of range requires type Int, but found type String"
+        
+            if type(hi) != int and type(x) != int: msg += "; "
+            if type(x)  != int: msg += f"High end of range requires type Int, but found type String"
+
+            return SimulationStep(script=script, stack=stack, message=msg)
+
+        msg = f"Performed WITHIN on <{hi}>, <{lo}>, and <{x}>; "
+
         if lo <= x < hi:
             stack.insert(0, Data(value=1))  # insert 1 if it is in range
-            msg = f"<{x}> is within range [{lo}, {hi}); Pushed <1> to stack"
+            msg += f"<{x}> is within range [{lo}, {hi}); Pushed <1> to stack"
         else :
             stack.insert(0, Data(value=0))  # insert 0 if it is out of range
-            msg = f"<{x}> is NOT within range [{lo}, {hi}); Pushed <0> to stack"
+            msg += f"<{x}> is NOT within range [{lo}, {hi}); Pushed <0> to stack"
 
         return SimulationStep(script=script, stack=stack, message=msg)
 
